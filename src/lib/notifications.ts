@@ -8,8 +8,9 @@ export async function requestNotificationPermissions(): Promise<boolean> {
 
 export async function registerPushToken(userId: string): Promise<void> {
   const token = await Notifications.getExpoPushTokenAsync();
-  await supabase
+  const { error } = await supabase
     .from("profiles")
     .update({ push_token: token.data })
     .eq("id", userId);
+  if (error) throw error;
 }

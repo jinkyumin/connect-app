@@ -44,27 +44,34 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  const expoResponse = await fetch("https://exp.host/--/api/v2/push/send", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      to: profile.push_token,
-      title,
-      body: msgBody,
-      data,
-      sound: "default",
-    }),
-  });
+  try {
+    const expoResponse = await fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        to: profile.push_token,
+        title,
+        body: msgBody,
+        data,
+        sound: "default",
+      }),
+    });
 
-  if (!expoResponse.ok) {
-    return new Response(JSON.stringify({ error: "Failed to send push notification" }), {
+    if (!expoResponse.ok) {
+      return new Response(JSON.stringify({ sent: false, reason: "expo_error" }), {
+        status: 502,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(JSON.stringify({ sent: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (err) {
+    return new Response(JSON.stringify({ sent: false, reason: "network_error" }), {
       status: 502,
       headers: { "Content-Type": "application/json" },
     });
   }
-
-  return new Response(JSON.stringify({ sent: true }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
 });
