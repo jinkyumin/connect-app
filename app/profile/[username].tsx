@@ -1,30 +1,33 @@
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
+import { useLocalSearchParams, router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { useAuthStore } from "@/stores/auth.store";
 import { Avatar } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
 import { PostCard } from "@/components/post/PostCard";
+import { useFollow, useUnfollow } from "@/hooks/useFollow";
 import type { Profile, Post } from "@/types";
 
-export default function MyProfileScreen() {
-  const session = useAuthStore((s) => s.session);
+export default function UserProfileScreen() {
+  const { username } = useLocalSearchParams<{ username: string }>();
+  const { mutate: follow, isPending: following } = useFollow();
+  const { mutate: unfollow, isPending: unfollowing } = useUnfollow();
 
   const { data: profile, isLoading } = useQuery<Profile>({
-    queryKey: ["myProfile"],
+    queryKey: ["profile", username],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
         .select("*, followers_count:follows!following_id(count), following_count:follows!follower_id(count)")
-        .eq("id", session?.user.id ?? "")
+        .eq("username", username)
         .single();
       if (error) throw error;
       return data as Profile;
     },
-    enabled: !!session,
   });
 
   const { data: posts } = useQuery<Post[]>({
-    queryKey: ["myPosts"],
+    queryKey: ["userPosts", username],
     queryFn: async () => {
       if (!profile) return [];
       const { data, error } = await supabase
@@ -45,13 +48,17 @@ export default function MyProfileScreen() {
   );
 
   if (!profile) return (
-    <View style={styles.center}><Text style={{ color: "#999" }}>로그인이 필요합니다.</Text></View>
+    <View style={styles.center}><Text style={{ color: "#999" }}>프로필을 찾을 수 없습니다.</Text></View>
   );
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Text style={styles.back}>← 뒤로</Text>
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>{profile.username}</Text>
+        <View style={{ width: 40 }} />
       </View>
       <FlatList
         data={posts ?? []}
@@ -65,6 +72,13 @@ export default function MyProfileScreen() {
             <View style={styles.statsRow}>
               <Text style={styles.stat}><Text style={styles.statNum}>{profile.followers_count ?? 0}</Text> 팔로워</Text>
               <Text style={styles.stat}><Text style={styles.statNum}>{profile.following_count ?? 0}</Text> 팔로잉</Text>
+            </View>
+            <View style={styles.followBtn}>
+              {profile.is_following ? (
+                <Button label="팔로잉" variant="outline" onPress={() => unfollow(profile.id)} loading={unfollowing} />
+              ) : (
+                <Button label="팔로우" onPress={() => follow(profile.id)} loading={following} />
+              )}
             </View>
           </View>
         }
@@ -80,8 +94,9 @@ export default function MyProfileScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFFFFF" },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  header: { paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: "#EFEFEF" },
-  headerTitle: { fontSize: 22, fontWeight: "700", color: "#171D1B" },
+  header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: "#EFEFEF" },
+  back: { color: "#999999", fontSize: 14 },
+  headerTitle: { fontSize: 16, fontWeight: "700", color: "#2E2E2E" },
   profileSection: { alignItems: "center", padding: 24, gap: 8, borderBottomWidth: 1, borderBottomColor: "#EFEFEF" },
   displayName: { fontSize: 22, fontWeight: "700", color: "#2E2E2E" },
   usernameText: { fontSize: 14, color: "#999999" },
@@ -89,6 +104,7 @@ const styles = StyleSheet.create({
   statsRow: { flexDirection: "row", gap: 24, marginTop: 8 },
   stat: { fontSize: 14, color: "#999999" },
   statNum: { fontWeight: "700", color: "#2E2E2E" },
+  followBtn: { marginTop: 8, width: "100%" },
   empty: { paddingTop: 40, alignItems: "center" },
   emptyText: { color: "#999999", fontSize: 14 },
 });
