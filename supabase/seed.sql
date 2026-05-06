@@ -1,0 +1,3 @@
+-- Dev seed: creates a test user profile (run after creating auth user manually)
+-- insert into profiles (id, username, display_name, bio)
+-- values ('00000000-0000-0000-0000-000000000001', 'testuser', 'Test User', 'Hello from Connect!');
