@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
 
 export default function HomeScreen() {
-  const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage, refetch } = useFeed();
+  const { data, fetchNextPage, hasNextPage, isLoading, isError, refetch } = useFeed();
   const queryClient = useQueryClient();
   const posts = data?.pages.flat() ?? [];
 
@@ -21,6 +21,14 @@ export default function HomeScreen() {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#171D1B" />
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View style={styles.center}>
+        <Text style={{ color: "#999999" }}>게시물을 불러올 수 없습니다.</Text>
       </View>
     );
   }
