@@ -24,7 +24,7 @@ export function useSaveDraft() {
     mutationFn: async ({ userId, content, parentId }: { userId: string; content: string; parentId?: string }) => {
       const { error } = await supabase
         .from("drafts")
-        .upsert({ user_id: userId, content, parent_id: parentId ?? null, updated_at: new Date().toISOString() });
+        .insert({ user_id: userId, content, parent_id: parentId ?? null, updated_at: new Date().toISOString() });
       if (error) throw error;
     },
     onSuccess: (_data, vars) => {

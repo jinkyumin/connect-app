@@ -3,18 +3,15 @@ import { router } from "expo-router";
 
 export function handleDeepLink(url: string): void {
   try {
-    const parsed = new URL(url);
-    const path = parsed.pathname;
+    const { path } = Linking.parse(url);
+    if (!path) return;
 
-    if (path.startsWith("/post/")) {
-      const id = path.replace("/post/", "");
-      router.push(`/post/${id}`);
-    } else if (path.startsWith("/profile/")) {
-      const username = path.replace("/profile/", "");
-      router.push(`/profile/${username}`);
-    } else if (path.startsWith("/hashtag/")) {
-      const tag = path.replace("/hashtag/", "");
-      router.push(`/hashtag/${tag}`);
+    if (path.startsWith("post/")) {
+      router.push(`/post/${path.replace("post/", "")}`);
+    } else if (path.startsWith("profile/")) {
+      router.push(`/profile/${path.replace("profile/", "")}`);
+    } else if (path.startsWith("hashtag/")) {
+      router.push(`/hashtag/${path.replace("hashtag/", "")}`);
     }
   } catch {
     // ignore invalid URLs

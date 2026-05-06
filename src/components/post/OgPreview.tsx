@@ -14,7 +14,13 @@ export function OgPreview({ url, title, imageUrl }: Props) {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => Linking.openURL(url)}
+      onPress={async () => {
+        try {
+          await Linking.openURL(url);
+        } catch {
+          // ignore unsupported URL schemes
+        }
+      }}
       activeOpacity={0.8}
     >
       {imageUrl && (
