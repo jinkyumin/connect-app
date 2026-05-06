@@ -233,3 +233,5 @@ create trigger on_auth_user_created
 -- Enable Realtime for messages and notifications
 alter publication supabase_realtime add table messages;
 alter publication supabase_realtime add table notifications;
+
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS push_token text;
