@@ -6,7 +6,6 @@ interface Props {
   variant?: "primary" | "outline" | "ghost";
   loading?: boolean;
   disabled?: boolean;
-  className?: string;
   fullWidth?: boolean;
 }
 
