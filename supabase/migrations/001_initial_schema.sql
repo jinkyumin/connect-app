@@ -110,7 +110,8 @@ create table notifications (
   type text not null check (type in ('like','comment','follow','follow_request','repost','mention','quote')),
   post_id uuid references posts(id) on delete cascade,
   read_at timestamptz,
-  created_at timestamptz default now()
+  created_at timestamptz default now(),
+  unique(user_id, actor_id, type, post_id)
 );
 
 -- Mutes
@@ -197,11 +198,16 @@ create policy "Users manage own reposts" on reposts for all using (auth.uid() = 
 create policy "Users manage own bookmarks" on bookmarks for all using (auth.uid() = user_id);
 create policy "Hashtags viewable" on hashtags for select using (true);
 create policy "Post hashtags viewable" on post_hashtags for select using (true);
+create policy "Post owners manage hashtags" on post_hashtags for insert
+  with check (auth.uid() = (select user_id from posts where id = post_hashtags.post_id));
+create policy "Post owners delete hashtags" on post_hashtags for delete
+  using (auth.uid() = (select user_id from posts where id = post_hashtags.post_id));
 
 create policy "Users view own messages" on messages for select
   using (auth.uid() = sender_id or auth.uid() = receiver_id);
 create policy "Users send messages" on messages for insert with check (auth.uid() = sender_id);
 
+-- Notifications are inserted by trigger functions (security definer) or service role
 create policy "Users view own notifications" on notifications for select using (auth.uid() = user_id);
 create policy "Users manage own mutes" on mutes for all using (auth.uid() = muter_id);
 create policy "Users manage own blocks" on blocks for all using (auth.uid() = blocker_id);
