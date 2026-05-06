@@ -1,0 +1,92 @@
+<h2>전체 아키텍처 설계</h2>
+<p class="subtitle">Expo + Supabase 풀스택 구조</p>
+
+<div class="section">
+  <span class="label">기술 스택</span>
+  <div class="cards" style="margin-top:12px">
+    <div class="card" style="cursor:default">
+      <div class="card-body">
+        <h3>📱 모바일 앱</h3>
+        <p><strong>Expo SDK 51</strong> (React Native)<br/>
+        Expo Router — 파일 기반 내비게이션<br/>
+        NativeWind — Tailwind CSS 스타일링<br/>
+        Zustand — 전역 상태 관리<br/>
+        React Query — 서버 상태 캐싱</p>
+      </div>
+    </div>
+    <div class="card" style="cursor:default">
+      <div class="card-body">
+        <h3>☁️ 백엔드 (Supabase)</h3>
+        <p><strong>PostgreSQL</strong> — 메인 DB<br/>
+        Supabase Auth — 이메일 인증<br/>
+        Supabase Storage — 이미지/영상<br/>
+        Supabase Realtime — 실시간 알림/DM<br/>
+        Edge Functions — 푸시 알림 (Expo Push)</p>
+      </div>
+    </div>
+    <div class="card" style="cursor:default">
+      <div class="card-body">
+        <h3>🚀 배포</h3>
+        <p><strong>Expo EAS Build</strong> — iOS/Android 빌드<br/>
+        Expo EAS Submit — 앱스토어 배포<br/>
+        Supabase Cloud — 백엔드 호스팅<br/>
+        Expo OTA Update — 즉시 업데이트</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <span class="label">데이터베이스 주요 테이블</span>
+  <div style="margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:12px">
+    <div style="background:#f8f9fa; border-radius:8px; padding:14px; font-size:13px">
+      <strong>profiles</strong><br/>
+      <span style="color:#666">id, username, display_name,<br/>avatar_url, bio, created_at</span>
+    </div>
+    <div style="background:#f8f9fa; border-radius:8px; padding:14px; font-size:13px">
+      <strong>posts</strong><br/>
+      <span style="color:#666">id, user_id, content, media_urls,<br/>parent_id (스레드), created_at</span>
+    </div>
+    <div style="background:#f8f9fa; border-radius:8px; padding:14px; font-size:13px">
+      <strong>likes</strong><br/>
+      <span style="color:#666">id, user_id, post_id, created_at</span>
+    </div>
+    <div style="background:#f8f9fa; border-radius:8px; padding:14px; font-size:13px">
+      <strong>follows</strong><br/>
+      <span style="color:#666">follower_id, following_id, created_at</span>
+    </div>
+    <div style="background:#f8f9fa; border-radius:8px; padding:14px; font-size:13px">
+      <strong>reposts</strong><br/>
+      <span style="color:#666">id, user_id, post_id, created_at</span>
+    </div>
+    <div style="background:#f8f9fa; border-radius:8px; padding:14px; font-size:13px">
+      <strong>messages</strong><br/>
+      <span style="color:#666">id, sender_id, receiver_id,<br/>content, read_at, created_at</span>
+    </div>
+    <div style="background:#f8f9fa; border-radius:8px; padding:14px; font-size:13px">
+      <strong>notifications</strong><br/>
+      <span style="color:#666">id, user_id, type, actor_id,<br/>post_id, read_at, created_at</span>
+    </div>
+    <div style="background:#f8f9fa; border-radius:8px; padding:14px; font-size:13px">
+      <strong>push_tokens</strong><br/>
+      <span style="color:#666">id, user_id, token, created_at</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <span class="label">앱 화면 구조 (Expo Router)</span>
+  <div style="margin-top:12px; font-size:13px; background:#f8f9fa; padding:16px; border-radius:8px; line-height:2">
+    <strong>/(tabs)</strong> — 하단 탭 네비게이션<br/>
+    &nbsp;&nbsp;├── <strong>index</strong> — 홈 피드<br/>
+    &nbsp;&nbsp;├── <strong>search</strong> — 검색<br/>
+    &nbsp;&nbsp;├── <strong>new-post</strong> — 게시물 작성<br/>
+    &nbsp;&nbsp;├── <strong>activity</strong> — 알림<br/>
+    &nbsp;&nbsp;└── <strong>profile</strong> — 내 프로필<br/>
+    <strong>/post/[id]</strong> — 게시물 상세 (스레드)<br/>
+    <strong>/profile/[id]</strong> — 타인 프로필<br/>
+    <strong>/messages</strong> — DM 목록<br/>
+    <strong>/messages/[id]</strong> — DM 대화방<br/>
+    <strong>/(auth)</strong> — 로그인/회원가입
+  </div>
+</div>

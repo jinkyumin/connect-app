@@ -1,0 +1,40 @@
+<h2>Threads 클론 — 개발 접근 방식</h2>
+<p class="subtitle">React Native + Supabase 기반, 3가지 아키텍처 옵션</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>✅ 추천 — Expo + Supabase 풀스택</h3>
+      <p>Expo SDK로 React Native 개발, Supabase로 DB/Auth/Storage/Realtime 모두 처리. 별도 백엔드 서버 없음.</p>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>장점</h4><ul><li>가장 빠른 개발 속도</li><li>인프라 관리 최소화</li><li>Supabase Realtime으로 푸시/DM 처리</li><li>Expo EAS로 앱 빌드/배포</li></ul></div>
+        <div class="cons"><h4>단점</h4><ul><li>복잡한 비즈니스 로직은 Supabase Edge Function 필요</li><li>Supabase 요금제 의존</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>React Native CLI + Supabase + Node.js API</h3>
+      <p>순수 React Native CLI로 앱 개발, Supabase는 DB/Auth만 사용, 별도 Node.js Express API 서버 추가.</p>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>장점</h4><ul><li>커스텀 비즈니스 로직 자유롭게 구현</li><li>네이티브 모듈 완전 제어</li></ul></div>
+        <div class="cons"><h4>단점</h4><ul><li>API 서버 별도 호스팅 필요</li><li>개발/배포 복잡도 증가</li><li>소규모 팀에는 오버엔지니어링</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Expo + Supabase + Next.js 관리자 웹</h3>
+      <p>A안에 추가로 Next.js 관리자 대시보드 포함. 앱은 Expo, 관리자는 웹으로 분리.</p>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>장점</h4><ul><li>관리자가 웹에서 사용자/게시물 관리 가능</li><li>모바일+웹 동시 운영</li></ul></div>
+        <div class="cons"><h4>단점</h4><ul><li>초기 범위가 커짐</li><li>관리자 기능이 당장 필요한지 불확실</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

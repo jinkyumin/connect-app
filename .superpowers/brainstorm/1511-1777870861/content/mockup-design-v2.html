@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thread App — Daiso Design Mockup v2</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+    background: #F5F5F7;
+    color: #1D1D1F;
+    padding: 32px 24px;
+  }
+  h2 { font-size: 22px; font-weight: 700; color: #1D1D1F; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .subtitle { font-size: 13px; color: #7A7A7A; margin-bottom: 28px; }
+  .accent-line { width: 32px; height: 2px; background: #0066CC; margin: 0 auto 20px; }
+
+  .phone-row { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+  .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .phone-label { font-size: 11px; font-weight: 700; color: #7A7A7A; letter-spacing: 1.5px; text-transform: uppercase; }
+
+  .phone {
+    width: 220px; height: 440px;
+    background: #fff;
+    border-radius: 32px;
+    border: 2px solid #E0E0E0;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+    display: flex; flex-direction: column;
+    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+    position: relative;
+  }
+  .phone.dark { background: #272729; border-color: #444; }
+
+  .status-bar {
+    padding: 8px 16px 4px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 10px; font-weight: 700; color: #1D1D1F;
+  }
+  .phone.dark .status-bar { color: #fff; }
+
+  .nav-bar {
+    padding: 6px 16px 8px;
+    border-bottom: 1px solid #F0F0F0;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .phone.dark .nav-bar { border-bottom-color: #3a3a3c; }
+  .nav-title { font-size: 16px; font-weight: 700; color: #1D1D1F; letter-spacing: -0.5px; }
+  .phone.dark .nav-title { color: #fff; }
+
+  .screen-body { flex: 1; overflow: hidden; }
+
+  .post { padding: 12px 14px; border-bottom: 1px solid #F0F0F0; }
+  .phone.dark .post { border-bottom-color: #3a3a3c; }
+  .post-header { display: flex; gap: 10px; margin-bottom: 6px; }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #E0E0E0; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #7A7A7A;
+  }
+  .avatar.blue { background: #0066CC; color: #fff; }
+  .post-name { font-size: 13px; font-weight: 700; color: #1D1D1F; }
+  .phone.dark .post-name { color: #fff; }
+  .post-time { font-size: 10px; color: #7A7A7A; }
+  .post-content { font-size: 12px; color: #1D1D1F; line-height: 1.55; margin-left: 46px; margin-bottom: 8px; }
+  .phone.dark .post-content { color: #CCCCCC; }
+  .post-actions { display: flex; gap: 14px; margin-left: 46px; font-size: 10px; color: #7A7A7A; }
+  .post-actions .liked { color: #0066CC; font-weight: 700; }
+
+  /* ── SVG Tab Bar ── */
+  .tab-bar {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid #F0F0F0;
+    padding: 10px 0 12px;
+    display: flex; justify-content: space-around; align-items: center;
+  }
+  .phone.dark .tab-bar { background: rgba(39,39,41,0.97); border-top-color: #3a3a3c; }
+
+  .tab-item {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 3px; cursor: pointer;
+  }
+  .tab-item svg { width: 22px; height: 22px; }
+  .tab-item .stroke { fill: none; stroke: #AEAEB2; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .tab-item.active .stroke { stroke: #0066CC; }
+  .phone.dark .tab-item .stroke { stroke: #555; }
+  .phone.dark .tab-item.active .stroke { stroke: #2997FF; }
+
+  /* Compose button — circle */
+  .tab-compose-btn {
+    width: 38px; height: 38px;
+    background: #1D1D1F;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .phone.dark .tab-compose-btn { background: #fff; }
+  .tab-compose-btn svg { width: 18px; height: 18px; }
+  .tab-compose-btn .compose-stroke { fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .phone.dark .tab-compose-btn .compose-stroke { stroke: #1D1D1F; }
+
+  /* Notification dot */
+  .notif-item { padding: 10px 14px; border-bottom: 1px solid #F0F0F0; display: flex; gap: 10px; align-items: center; }
+  .phone.dark .notif-item { border-bottom-color: #3a3a3c; }
+  .notif-icon { width: 32px; height: 32px; border-radius: 50%; background: #E0E0E0; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+  .notif-text { font-size: 11px; color: #1D1D1F; line-height: 1.5; flex: 1; }
+  .phone.dark .notif-text { color: #CCCCCC; }
+  .notif-text strong { color: #1D1D1F; }
+  .phone.dark .notif-text strong { color: #fff; }
+  .notif-dot { width: 7px; height: 7px; background: #0066CC; border-radius: 50%; flex-shrink: 0; }
+
+  /* DM */
+  .dm-body { padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .bubble { max-width: 72%; padding: 8px 12px; border-radius: 14px; font-size: 12px; line-height: 1.55; }
+  .bubble.received { background: #F5F5F7; color: #1D1D1F; align-self: flex-start; border-bottom-left-radius: 4px; }
+  .phone.dark .bubble.received { background: #3a3a3c; color: #fff; }
+  .bubble.sent { background: #0066CC; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .dm-input-row { padding: 8px 12px; border-top: 1px solid #F0F0F0; display: flex; gap: 8px; align-items: center; }
+  .phone.dark .dm-input-row { border-top-color: #3a3a3c; }
+  .dm-input { flex: 1; background: #F5F5F7; border-radius: 18px; padding: 7px 12px; font-size: 12px; color: #7A7A7A; font-family: 'Malgun Gothic', sans-serif; }
+  .phone.dark .dm-input { background: #3a3a3c; color: #888; }
+  .send-btn { width: 28px; height: 28px; background: #0066CC; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .send-btn svg { width: 14px; height: 14px; }
+  .send-btn .s { fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* Profile */
+  .profile-header { padding: 16px 14px 12px; border-bottom: 1px solid #F0F0F0; }
+  .profile-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .avatar-lg { width: 56px; height: 56px; border-radius: 50%; background: #0066CC; color: #fff; font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .profile-name { font-size: 16px; font-weight: 700; color: #1D1D1F; letter-spacing: -0.5px; }
+  .profile-handle { font-size: 11px; color: #7A7A7A; margin-bottom: 4px; }
+  .profile-bio { font-size: 11px; color: #1D1D1F; line-height: 1.55; margin-bottom: 10px; }
+  .profile-stats { display: flex; gap: 20px; }
+  .stat-num { font-size: 14px; font-weight: 700; color: #1D1D1F; display: block; }
+  .stat-label { font-size: 10px; color: #7A7A7A; }
+  .edit-btn { display: block; margin: 10px 14px 0; border: 1px solid #E0E0E0; border-radius: 8px; padding: 8px; text-align: center; font-size: 12px; font-weight: 700; color: #1D1D1F; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h2>Thread 앱 — UI 목업 v2</h2>
+<p class="subtitle">심플 SVG 아이콘 탭바 적용 · 맑은 고딕 · #0066CC 액센트</p>
+<div class="accent-line"></div>
+
+<!-- SVG icon defs (재사용) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- Home -->
+    <symbol id="ic-home" viewBox="0 0 24 24">
+      <path class="stroke" d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1H15v-5h-6v5H4a1 1 0 01-1-1V10.5z"/>
+    </symbol>
+    <!-- Search -->
+    <symbol id="ic-search" viewBox="0 0 24 24">
+      <circle class="stroke" cx="10.5" cy="10.5" r="6.5"/>
+      <line class="stroke" x1="15.5" y1="15.5" x2="21" y2="21"/>
+    </symbol>
+    <!-- Compose (pencil) -->
+    <symbol id="ic-compose" viewBox="0 0 24 24">
+      <path class="compose-stroke" d="M12 20h9"/>
+      <path class="compose-stroke" d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/>
+    </symbol>
+    <!-- Bell -->
+    <symbol id="ic-bell" viewBox="0 0 24 24">
+      <path class="stroke" d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path class="stroke" d="M13.73 21a2 2 0 01-3.46 0"/>
+    </symbol>
+    <!-- User -->
+    <symbol id="ic-user" viewBox="0 0 24 24">
+      <path class="stroke" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+      <circle class="stroke" cx="12" cy="7" r="4"/>
+    </symbol>
+    <!-- Send arrow -->
+    <symbol id="ic-send" viewBox="0 0 24 24">
+      <line class="s" x1="22" y1="2" x2="11" y2="13"/>
+      <polygon class="s" points="22 2 15 22 11 13 2 9 22 2"/>
+    </symbol>
+    <!-- Mail -->
+    <symbol id="ic-mail" viewBox="0 0 24 24">
+      <path class="stroke" d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+      <polyline class="stroke" points="22,6 12,13 2,6"/>
+    </symbol>
+    <!-- Settings gear -->
+    <symbol id="ic-settings" viewBox="0 0 24 24">
+      <circle class="stroke" cx="12" cy="12" r="3"/>
+      <path class="stroke" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+    </symbol>
+    <!-- Back arrow -->
+    <symbol id="ic-back" viewBox="0 0 24 24">
+      <polyline class="stroke" points="15 18 9 12 15 6"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="phone-row">
+
+  <!-- 1. 홈 피드 -->
+  <div class="phone-wrap">
+    <div class="phone-label">홈 피드</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+      <div class="nav-bar">
+        <span style="width:22px"></span>
+        <span class="nav-title">Thread</span>
+        <svg width="22" height="22" viewBox="0 0 24 24"><use href="#ic-mail" class="stroke"/></svg>
+      </div>
+      <div class="screen-body">
+        <div class="post">
+          <div class="post-header">
+            <div class="avatar blue">홍</div>
+            <div><div class="post-name">홍길동</div><div class="post-time">2분 전</div></div>
+          </div>
+          <div class="post-content">오늘 팀 미팅 어떠셨나요? 다들 의견 공유해주세요 🙌</div>
+          <div class="post-actions"><span class="liked">♡ 12</span><span>💬 3</span><span>↻ 1</span></div>
+        </div>
+        <div class="post">
+          <div class="post-header">
+            <div class="avatar">김</div>
+            <div><div class="post-name">김영희</div><div class="post-time">15분 전</div></div>
+          </div>
+          <div class="post-content">신규 프로젝트 킥오프 완료! 모두 고생하셨습니다 🎉</div>
+          <div class="post-actions"><span>♡ 8</span><span>💬 1</span><span>↻ 0</span></div>
+        </div>
+        <div class="post">
+          <div class="post-header">
+            <div class="avatar blue">박</div>
+            <div><div class="post-name">박지연</div><div class="post-time">1시간 전</div></div>
+          </div>
+          <div class="post-content">다음 주 워크샵 일정 공유드립니다. 참석 여부 댓글로 남겨주세요.</div>
+          <div class="post-actions"><span>♡ 5</span><span>💬 7</span><span>↻ 2</span></div>
+        </div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item active"><svg viewBox="0 0 24 24"><use href="#ic-home"/></svg></div>
+        <div class="tab-item"><svg viewBox="0 0 24 24"><use href="#ic-search"/></svg></div>
+        <div class="tab-compose-btn"><svg viewBox="0 0 24 24"><use href="#ic-compose"/></svg></div>
+        <div class="tab-item"><svg viewBox="0 0 24 24"><use href="#ic-bell"/></svg></div>
+        <div class="tab-item"><svg viewBox="0 0 24 24"><use href="#ic-user"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 게시물 작성 (다크) -->
+  <div class="phone-wrap">
+    <div class="phone-label">게시물 작성</div>
+    <div class="phone dark">
+      <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+      <div class="nav-bar">
+        <span style="font-size:13px; color:#2997FF; cursor:pointer">취소</span>
+        <span class="nav-title">새 게시물</span>
+        <span style="width:28px"></span>
+      </div>
+      <div style="flex:1; padding:14px">
+        <div style="display:flex; gap:10px; align-items:flex-start">
+          <div class="avatar blue">나</div>
+          <div>
+            <div style="font-size:13px; font-weight:700; color:#fff; margin-bottom:4px">내 이름</div>
+            <div style="font-size:13px; color:#555">무슨 생각을 하고 계신가요?</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:14px; margin-top:16px; margin-left:46px">
+          <svg width="20" height="20" viewBox="0 0 24 24"><rect class="stroke" x="3" y="3" width="18" height="18" rx="2"/><circle class="stroke" cx="8.5" cy="8.5" r="1.5"/><polyline class="stroke" points="21,15 16,10 5,21"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24"><path class="stroke" d="M23 7l-7 5 7 5V7z"/><rect class="stroke" x="1" y="5" width="15" height="14" rx="2"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24"><path class="stroke" d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+        </div>
+      </div>
+      <div style="padding:0 14px 14px">
+        <div style="background:#0066CC; color:#fff; font-family:'Malgun Gothic',sans-serif; font-size:13px; font-weight:700; border-radius:20px; padding:10px; text-align:center; cursor:pointer">게시</div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item"><svg viewBox="0 0 24 24"><use href="#ic-home"/></svg></div>
+        <div class="tab-item"><svg viewBox="0 0 24 24"><use href="#ic-search"/></svg></div>
+        <div class="tab-compose-btn"><svg viewBox="0 0 24 24"><use href="#ic-compose"/></svg></div>
+        <div class="tab-item"><svg viewBox="0 0 24 24"><use href="#ic-bell"/></svg></div>
+        <div class="tab-item"><svg viewBox="0 0 24 24"><use href="#ic-user"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 알림 -->
+  <div class="phone-wrap">
+    <div class="phone-label">알림</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+      <div class="nav-bar">
+        <span style="width:22px"></span>
+        <span class="nav-title">알림</span>
+        <span style="width:22px"></span>
+      </div>
+      <div class="screen-body">
+        <div class="notif-item">
+          <div class="notif-icon" style="background:#EFF4FF">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path fill="none" stroke="#0066CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </div>
+          <div class="notif-text"><strong>홍길동</strong>님이 회원님의 게시물을 좋아합니다<br/><span style="color:#7A7A7A; font-size:10px">2분 전</span></div>
+          <div class="notif-dot"></div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon" style="background:#F5F5F7">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path fill="none" stroke="#3a3a3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle fill="none" stroke="#3a3a3c" stroke-width="2" cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="notif-text"><strong>이철수</strong>님이 팔로우하기 시작했습니다<br/><span style="color:#7A7A7A; font-size:10px">10분 전</span></div>
+          <div class="notif-dot"></div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon" style="background:#F5F5F7">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path fill="none" stroke="#7A7A7A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </div>
+          <div class="notif-text"><strong>박지연</strong>님이 댓글을 달았습니다<br/><span style="color:#7A7A7A; font-size:10px">1시간 전</span></div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon" style="background:#F5F5F7">
+            <svg width="16" height="16" viewBox="0 0 24 24"><polyline fill="none" stroke="#7A7A7A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="17 1 21 5 17 9"/><path fill="none" stroke="#7A7A7A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4"/><path fill="none" stroke="#7A7A7A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+          </div>
+          <div class="notif-text"><strong>김영희</strong>님이 리포스트했습니다<br/><span style="color:#7A7A7A; font-size:10px">3시간 전</span></div>
+        </div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item"><svg viewBox="0 0 24 24"><use href="#ic-home"/></svg></div>
+        <div class="tab-item"><svg viewBox="0 0 24 24"><use href="#ic-search"/></svg></div>
+        <div class="tab-compose-btn"><svg viewBox="0 0 24 24"><use href="#ic-compose"/></svg></div>
+        <div class="tab-item active"><svg viewBox="0 0 24 24"><use href="#ic-bell"/></svg></div>
+        <div class="tab-item"><svg viewBox="0 0 24 24"><use href="#ic-user"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. DM (다크) -->
+  <div class="phone-wrap">
+    <div class="phone-label">DM 대화</div>
+    <div class="phone dark">
+      <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+      <div class="nav-bar">
+        <svg width="22" height="22" viewBox="0 0 24 24"><use href="#ic-back"/></svg>
+        <span class="nav-title">홍길동</span>
+        <span style="width:22px"></span>
+      </div>
+      <div class="dm-body">
+        <div class="bubble received">안녕하세요! 자료 공유 부탁드려도 될까요?</div>
+        <div class="bubble sent">네, 잠시만요!</div>
+        <div class="bubble received">감사합니다 😊</div>
+        <div class="bubble sent">파일 전송해드렸습니다. 확인해보세요.</div>
+        <div class="bubble received">잘 받았습니다 👍</div>
+      </div>
+      <div class="dm-input-row">
+        <div class="dm-input">메시지 입력...</div>
+        <div class="send-btn">
+          <svg viewBox="0 0 24 24"><use href="#ic-send"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 프로필 -->
+  <div class="phone-wrap">
+    <div class="phone-label">프로필</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+      <div class="nav-bar">
+        <span style="width:22px"></span>
+        <span class="nav-title">프로필</span>
+        <svg width="22" height="22" viewBox="0 0 24 24"><use href="#ic-settings"/></svg>
+      </div>
+      <div class="screen-body">
+        <div class="profile-header">
+          <div class="profile-top">
+            <div>
+              <div class="profile-name">홍길동</div>
+              <div class="profile-handle">@honggildong</div>
+            </div>
+            <div class="avatar-lg">홍</div>
+          </div>
+          <div class="profile-bio">아성다이소 IT팀 · 풀스택 개발자<br/>좋은 제품, 좋은 팀 만들기 🛠️</div>
+          <div class="profile-stats">
+            <div><span class="stat-num">24</span><span class="stat-label">게시물</span></div>
+            <div><span class="stat-num" style="color:#0066CC">128</span><span class="stat-label">팔로워</span></div>
+            <div><span class="stat-num">56</span><span class="stat-label">팔로잉</span></div>
+          </div>
+        </div>
+        <div class="edit-btn">프로필 편집</div>
+        <div class="post" style="margin-top:4px">
+          <div class="post-header">
+            <div class="avatar blue">홍</div>
+            <div><div class="post-name">홍길동</div><div class="post-time">어제</div></div>
+          </div>
+          <div class="post-content">오늘 팀 미팅 어떠셨나요? 🙌</div>
+          <div class="post-actions"><span class="liked">♡ 12</span><span>💬 3</span></div>
+        </div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item"><svg viewBox="0 0 24 24"><use href="#ic-home"/></svg></div>
+        <div class="tab-item"><svg viewBox="0 0 24 24"><use href="#ic-search"/></svg></div>
+        <div class="tab-compose-btn"><svg viewBox="0 0 24 24"><use href="#ic-compose"/></svg></div>
+        <div class="tab-item"><svg viewBox="0 0 24 24"><use href="#ic-bell"/></svg></div>
+        <div class="tab-item active"><svg viewBox="0 0 24 24"><use href="#ic-user"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="text-align:center; margin-top:28px; font-size:11px; color:#7A7A7A; font-family:'Malgun Gothic',sans-serif">
+  아성다이소 IT팀 · Thread 앱 v2 · SVG 아이콘 · #0066CC
+</div>
+
+</body>
+</html>

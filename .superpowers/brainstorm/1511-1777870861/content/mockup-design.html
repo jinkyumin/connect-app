@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thread App — Daiso Design Mockup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+    background: #F5F5F7;
+    color: #1D1D1F;
+    padding: 32px 24px;
+  }
+  h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1D1D1F;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: #7A7A7A;
+    margin-bottom: 28px;
+  }
+
+  .phone-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .phone-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .phone-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #7A7A7A;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  /* Phone shell */
+  .phone {
+    width: 220px;
+    height: 440px;
+    background: #fff;
+    border-radius: 32px;
+    border: 2px solid #E0E0E0;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+    display: flex;
+    flex-direction: column;
+    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+    position: relative;
+  }
+
+  .phone.dark {
+    background: #272729;
+    border-color: #444;
+  }
+
+  /* Status bar */
+  .status-bar {
+    padding: 8px 16px 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: #1D1D1F;
+    background: inherit;
+  }
+  .phone.dark .status-bar { color: #fff; }
+
+  /* Nav bar */
+  .nav-bar {
+    padding: 6px 16px 8px;
+    border-bottom: 1px solid #F0F0F0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .phone.dark .nav-bar { border-bottom-color: #3a3a3c; }
+
+  .nav-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1D1D1F;
+    letter-spacing: -0.5px;
+  }
+  .phone.dark .nav-title { color: #fff; }
+
+  .nav-icon {
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  /* Scroll body */
+  .screen-body {
+    flex: 1;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  /* Feed post */
+  .post {
+    padding: 12px 14px;
+    border-bottom: 1px solid #F0F0F0;
+  }
+  .phone.dark .post { border-bottom-color: #3a3a3c; }
+
+  .post-header {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #E0E0E0;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #7A7A7A;
+    overflow: hidden;
+  }
+  .avatar.blue { background: #0066CC; color: #fff; }
+  .avatar.dark-bg { background: #3a3a3c; color: #ccc; }
+
+  .post-meta { flex: 1; }
+  .post-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1D1D1F;
+  }
+  .phone.dark .post-name { color: #fff; }
+  .post-time {
+    font-size: 10px;
+    color: #7A7A7A;
+  }
+  .post-content {
+    font-size: 12px;
+    color: #1D1D1F;
+    line-height: 1.55;
+    margin-left: 46px;
+    margin-bottom: 8px;
+  }
+  .phone.dark .post-content { color: #CCCCCC; }
+  .post-actions {
+    display: flex;
+    gap: 14px;
+    margin-left: 46px;
+    font-size: 10px;
+    color: #7A7A7A;
+  }
+  .post-actions span { cursor: pointer; }
+  .post-actions .liked { color: #0066CC; font-weight: 700; }
+
+  /* Bottom tab bar */
+  .tab-bar {
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid #F0F0F0;
+    padding: 8px 0 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .phone.dark .tab-bar {
+    background: rgba(39,39,41,0.95);
+    border-top-color: #3a3a3c;
+  }
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 9px;
+    color: #7A7A7A;
+    cursor: pointer;
+  }
+  .tab-item.active { color: #0066CC; }
+  .tab-item .icon { font-size: 18px; }
+  .tab-compose {
+    width: 36px; height: 36px;
+    background: #1D1D1F;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .phone.dark .tab-compose { background: #fff; }
+
+  /* Compose screen */
+  .compose-area {
+    padding: 12px 14px;
+    flex: 1;
+  }
+  .compose-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .compose-input {
+    flex: 1;
+    font-size: 13px;
+    color: #1D1D1F;
+    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+    line-height: 1.55;
+  }
+  .compose-placeholder { color: #7A7A7A; }
+  .compose-tools {
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+    margin-left: 46px;
+    font-size: 16px;
+    color: #7A7A7A;
+  }
+  .compose-btn {
+    margin: 12px 14px 0 auto;
+    background: #1D1D1F;
+    color: #fff;
+    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    border-radius: 20px;
+    padding: 9px 24px;
+    display: block;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  /* Profile */
+  .profile-header {
+    padding: 16px 14px 12px;
+    border-bottom: 1px solid #F0F0F0;
+  }
+  .phone.dark .profile-header { border-bottom-color: #3a3a3c; }
+  .profile-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .avatar-lg {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: #0066CC;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .profile-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1D1D1F;
+    letter-spacing: -0.5px;
+  }
+  .phone.dark .profile-name { color: #fff; }
+  .profile-handle {
+    font-size: 11px;
+    color: #7A7A7A;
+    margin-bottom: 4px;
+  }
+  .profile-bio {
+    font-size: 11px;
+    color: #1D1D1F;
+    line-height: 1.55;
+    margin-bottom: 10px;
+  }
+  .phone.dark .profile-bio { color: #CCCCCC; }
+  .profile-stats {
+    display: flex;
+    gap: 20px;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1D1D1F;
+    display: block;
+  }
+  .phone.dark .stat-num { color: #fff; }
+  .stat-label {
+    font-size: 10px;
+    color: #7A7A7A;
+  }
+  .edit-btn {
+    display: block;
+    margin: 10px 14px 0;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    padding: 8px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1D1D1F;
+    cursor: pointer;
+  }
+  .phone.dark .edit-btn {
+    border-color: #555;
+    color: #fff;
+  }
+
+  /* DM */
+  .dm-body {
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+  .bubble {
+    max-width: 72%;
+    padding: 8px 12px;
+    border-radius: 14px;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+  .bubble.received {
+    background: #F5F5F7;
+    color: #1D1D1F;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+  }
+  .phone.dark .bubble.received {
+    background: #3a3a3c;
+    color: #fff;
+  }
+  .bubble.sent {
+    background: #0066CC;
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .dm-input-row {
+    padding: 8px 12px;
+    border-top: 1px solid #F0F0F0;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .phone.dark .dm-input-row { border-top-color: #3a3a3c; }
+  .dm-input {
+    flex: 1;
+    background: #F5F5F7;
+    border-radius: 18px;
+    padding: 7px 12px;
+    font-size: 12px;
+    color: #7A7A7A;
+    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+  }
+  .phone.dark .dm-input { background: #3a3a3c; color: #888; }
+  .send-btn {
+    width: 28px; height: 28px;
+    background: #0066CC;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  /* Notification */
+  .notif-item {
+    padding: 10px 14px;
+    border-bottom: 1px solid #F0F0F0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .phone.dark .notif-item { border-bottom-color: #3a3a3c; }
+  .notif-icon {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: #E0E0E0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  .notif-text {
+    font-size: 11px;
+    color: #1D1D1F;
+    line-height: 1.5;
+  }
+  .phone.dark .notif-text { color: #CCCCCC; }
+  .notif-text strong { color: #1D1D1F; }
+  .phone.dark .notif-text strong { color: #fff; }
+  .notif-dot {
+    width: 7px; height: 7px;
+    background: #0066CC;
+    border-radius: 50%;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  /* Accent line */
+  .accent-line {
+    width: 32px;
+    height: 2px;
+    background: #0066CC;
+    margin: 0 auto 20px;
+  }
+</style>
+</head>
+<body>
+
+<h2>Thread 앱 — UI 목업</h2>
+<p class="subtitle">Daiso 디자인 시스템 적용 · 맑은 고딕 · #0066CC 액센트</p>
+<div class="accent-line"></div>
+
+<div class="phone-row">
+
+  <!-- 1. 홈 피드 (라이트) -->
+  <div class="phone-wrap">
+    <div class="phone-label">홈 피드</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+      <div class="nav-bar">
+        <span style="font-size:22px">🔵</span>
+        <span class="nav-title">Thread</span>
+        <span class="nav-icon">✉️</span>
+      </div>
+      <div class="screen-body">
+        <div class="post">
+          <div class="post-header">
+            <div class="avatar blue">홍</div>
+            <div class="post-meta">
+              <div class="post-name">홍길동</div>
+              <div class="post-time">2분 전</div>
+            </div>
+          </div>
+          <div class="post-content">오늘 팀 미팅 어떠셨나요? 다들 의견 공유해주세요 🙌</div>
+          <div class="post-actions">
+            <span class="liked">♡ 12</span>
+            <span>💬 3</span>
+            <span>🔁 1</span>
+          </div>
+        </div>
+        <div class="post">
+          <div class="post-header">
+            <div class="avatar">김</div>
+            <div class="post-meta">
+              <div class="post-name">김영희</div>
+              <div class="post-time">15분 전</div>
+            </div>
+          </div>
+          <div class="post-content">신규 프로젝트 킥오프 완료! 모두 고생하셨습니다 🎉</div>
+          <div class="post-actions">
+            <span>♡ 8</span>
+            <span>💬 1</span>
+            <span>🔁 0</span>
+          </div>
+        </div>
+        <div class="post">
+          <div class="post-header">
+            <div class="avatar blue">박</div>
+            <div class="post-meta">
+              <div class="post-name">박지연</div>
+              <div class="post-time">1시간 전</div>
+            </div>
+          </div>
+          <div class="post-content">다음 주 워크샵 일정 공유드립니다. 참석 여부 댓글로 남겨주세요.</div>
+          <div class="post-actions">
+            <span>♡ 5</span>
+            <span>💬 7</span>
+            <span>🔁 2</span>
+          </div>
+        </div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item active"><span class="icon">🏠</span></div>
+        <div class="tab-item"><span class="icon">🔍</span></div>
+        <div class="tab-compose">✏️</div>
+        <div class="tab-item"><span class="icon">🔔</span></div>
+        <div class="tab-item"><span class="icon">👤</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 게시물 작성 (다크) -->
+  <div class="phone-wrap">
+    <div class="phone-label">게시물 작성</div>
+    <div class="phone dark">
+      <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+      <div class="nav-bar" style="border-bottom-color:#3a3a3c">
+        <span style="font-size:13px; color:#7A7A7A; cursor:pointer">취소</span>
+        <span class="nav-title">새 게시물</span>
+        <span style="display:none"></span>
+      </div>
+      <div style="flex:1; padding:14px">
+        <div class="compose-row">
+          <div class="avatar blue">나</div>
+          <div class="compose-input">
+            <div style="font-size:13px; font-weight:700; color:#fff; margin-bottom:4px">내 이름</div>
+            <div class="compose-placeholder" style="color:#555">무슨 생각을 하고 계신가요?</div>
+          </div>
+        </div>
+        <div class="compose-tools" style="color:#555">
+          <span>🖼️</span><span>📷</span><span>📎</span><span>😊</span>
+        </div>
+      </div>
+      <div style="padding:0 14px 14px">
+        <div style="background:#0066CC; color:#fff; font-family:'Malgun Gothic',sans-serif; font-size:13px; font-weight:700; border-radius:20px; padding:10px; text-align:center; cursor:pointer">게시</div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item"><span class="icon">🏠</span></div>
+        <div class="tab-item"><span class="icon">🔍</span></div>
+        <div class="tab-compose">✏️</div>
+        <div class="tab-item"><span class="icon">🔔</span></div>
+        <div class="tab-item"><span class="icon">👤</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 알림 (라이트) -->
+  <div class="phone-wrap">
+    <div class="phone-label">알림</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+      <div class="nav-bar">
+        <span></span>
+        <span class="nav-title">알림</span>
+        <span></span>
+      </div>
+      <div class="screen-body">
+        <div class="notif-item">
+          <div class="notif-icon" style="background:#0066CC; color:#fff">♡</div>
+          <div class="notif-text"><strong>홍길동</strong>님이 회원님의 게시물을 좋아합니다<br/><span style="color:#7A7A7A; font-size:10px">2분 전</span></div>
+          <div class="notif-dot"></div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon" style="background:#E0E0E0">👤</div>
+          <div class="notif-text"><strong>이철수</strong>님이 팔로우하기 시작했습니다<br/><span style="color:#7A7A7A; font-size:10px">10분 전</span></div>
+          <div class="notif-dot"></div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon" style="background:#F5F5F7">💬</div>
+          <div class="notif-text"><strong>박지연</strong>님이 댓글을 달았습니다<br/><span style="color:#7A7A7A; font-size:10px">1시간 전</span></div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-icon" style="background:#F5F5F7">🔁</div>
+          <div class="notif-text"><strong>김영희</strong>님이 회원님의 게시물을 리포스트했습니다<br/><span style="color:#7A7A7A; font-size:10px">3시간 전</span></div>
+        </div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item"><span class="icon">🏠</span></div>
+        <div class="tab-item"><span class="icon">🔍</span></div>
+        <div class="tab-compose">✏️</div>
+        <div class="tab-item active"><span class="icon">🔔</span></div>
+        <div class="tab-item"><span class="icon">👤</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. DM (다크) -->
+  <div class="phone-wrap">
+    <div class="phone-label">DM 대화</div>
+    <div class="phone dark">
+      <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+      <div class="nav-bar" style="border-bottom-color:#3a3a3c">
+        <span style="font-size:13px; color:#0066CC; cursor:pointer">← 뒤로</span>
+        <span class="nav-title">홍길동</span>
+        <span></span>
+      </div>
+      <div class="dm-body">
+        <div class="bubble received">안녕하세요! 자료 공유 부탁드려도 될까요?</div>
+        <div class="bubble sent">네, 잠시만요!</div>
+        <div class="bubble received">감사합니다 😊</div>
+        <div class="bubble sent">파일 전송해드렸습니다. 확인해보세요.</div>
+        <div class="bubble received">잘 받았습니다 👍</div>
+      </div>
+      <div class="dm-input-row">
+        <div class="dm-input">메시지 입력...</div>
+        <div class="send-btn">↑</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 프로필 (라이트) -->
+  <div class="phone-wrap">
+    <div class="phone-label">프로필</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+      <div class="nav-bar">
+        <span></span>
+        <span class="nav-title">프로필</span>
+        <span class="nav-icon">⚙️</span>
+      </div>
+      <div class="screen-body">
+        <div class="profile-header">
+          <div class="profile-top">
+            <div>
+              <div class="profile-name">홍길동</div>
+              <div class="profile-handle">@honggildong</div>
+            </div>
+            <div class="avatar-lg">홍</div>
+          </div>
+          <div class="profile-bio">아성다이소 IT팀 · 풀스택 개발자<br/>좋은 제품, 좋은 팀 만들기 🛠️</div>
+          <div class="profile-stats">
+            <div class="stat-item">
+              <span class="stat-num">24</span>
+              <span class="stat-label">게시물</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num" style="color:#0066CC">128</span>
+              <span class="stat-label">팔로워</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">56</span>
+              <span class="stat-label">팔로잉</span>
+            </div>
+          </div>
+        </div>
+        <div class="edit-btn">프로필 편집</div>
+        <div class="post" style="margin-top:4px">
+          <div class="post-header">
+            <div class="avatar blue">홍</div>
+            <div class="post-meta">
+              <div class="post-name">홍길동</div>
+              <div class="post-time">어제</div>
+            </div>
+          </div>
+          <div class="post-content">오늘 팀 미팅 어떠셨나요? 🙌</div>
+          <div class="post-actions"><span class="liked">♡ 12</span><span>💬 3</span></div>
+        </div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item"><span class="icon">🏠</span></div>
+        <div class="tab-item"><span class="icon">🔍</span></div>
+        <div class="tab-compose">✏️</div>
+        <div class="tab-item"><span class="icon">🔔</span></div>
+        <div class="tab-item active"><span class="icon">👤</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="text-align:center; margin-top:28px; font-size:11px; color:#7A7A7A; font-family:'Malgun Gothic',sans-serif">
+  아성다이소 IT팀 · Thread 앱 · 맑은 고딕 · #0066CC
+</div>
+
+</body>
+</html>
