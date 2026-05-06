@@ -32,12 +32,14 @@ export default function DMScreen() {
   // Mark messages as read
   useEffect(() => {
     if (!session || !partnerId) return;
-    supabase
-      .from("messages")
-      .update({ read_at: new Date().toISOString() })
-      .eq("sender_id", partnerId)
-      .eq("receiver_id", session.user.id)
-      .is("read_at", null);
+    (async () => {
+      await supabase
+        .from("messages")
+        .update({ read_at: new Date().toISOString() })
+        .eq("sender_id", partnerId)
+        .eq("receiver_id", session.user.id)
+        .is("read_at", null);
+    })();
   }, [session, partnerId, messages]);
 
   const handleSend = async () => {
@@ -49,10 +51,12 @@ export default function DMScreen() {
       receiver_id: partnerId,
       content: msg,
     });
-    if (!error) {
-      queryClient.invalidateQueries({ queryKey: ["dm", session.user.id, partnerId] });
-      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    if (error) {
+      setText(msg); // restore on failure
+      return;
     }
+    queryClient.invalidateQueries({ queryKey: ["dm", session.user.id, partnerId] });
+    queryClient.invalidateQueries({ queryKey: ["conversations"] });
   };
 
   return (
