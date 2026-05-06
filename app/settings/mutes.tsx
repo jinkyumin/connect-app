@@ -23,7 +23,7 @@ export default function MutesScreen() {
           keyExtractor={(item) => item.id}
           renderItem={({ item }: { item: Profile }) => (
             <View style={styles.row}>
-              <Avatar uri={item.avatar_url} size={40} initials={item.username[0].toUpperCase()} />
+              <Avatar uri={item.avatar_url} size={40} initials={(item.username?.[0] ?? "?").toUpperCase()} />
               <Text style={styles.username}>{item.username}</Text>
               <TouchableOpacity onPress={() => unmute(item.id)} style={styles.actionBtn}>
                 <Text style={styles.actionText}>뮤트 해제</Text>

@@ -8,6 +8,7 @@ jest.mock("@react-native-async-storage/async-storage", () => ({
 import { useUiStore } from "../stores/ui.store";
 
 describe("useUiStore", () => {
+  beforeEach(() => useUiStore.setState({ isDark: false }));
   it("starts with isDark = false", () => {
     const { result } = renderHook(() => useUiStore());
     expect(result.current.isDark).toBe(false);

@@ -20,7 +20,8 @@ export default function NotificationSettingsScreen() {
 
   const { mutate: update } = useMutation({
     mutationFn: async (patch: Partial<typeof settings>) => {
-      await supabase.from("notification_settings").update(patch).eq("user_id", session?.user.id ?? "");
+      const { error } = await supabase.from("notification_settings").update(patch).eq("user_id", session?.user.id ?? "");
+      if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifSettings"] }),
   });

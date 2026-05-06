@@ -20,7 +20,8 @@ export default function PrivacyScreen() {
 
   const { mutate: update } = useMutation({
     mutationFn: async (isPrivate: boolean) => {
-      await supabase.from("profiles").update({ is_private: isPrivate }).eq("id", session?.user.id ?? "");
+      const { error } = await supabase.from("profiles").update({ is_private: isPrivate }).eq("id", session?.user.id ?? "");
+      if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["myProfile"] }),
   });
