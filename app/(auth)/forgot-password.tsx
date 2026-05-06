@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { router } from "expo-router";
 import { supabase } from "@/lib/supabase";
@@ -26,25 +28,28 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.back} onPress={() => router.back()}>
-        <Text style={styles.backText}>← 뒤로</Text>
-      </TouchableOpacity>
-      <Text style={styles.title}>비밀번호 재설정</Text>
-      <Text style={styles.desc}>가입한 이메일 주소를 입력하시면 재설정 링크를 보내드립니다.</Text>
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.back} onPress={() => router.back()}>
+          <Text style={styles.backText}>← 뒤로</Text>
+        </TouchableOpacity>
+        <Text style={styles.title}>비밀번호 재설정</Text>
+        <Text style={styles.desc}>가입한 이메일 주소를 입력하시면 재설정 링크를 보내드립니다.</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="이메일"
-        placeholderTextColor="#999999"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="이메일"
+          placeholderTextColor="#999999"
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          testID="email-input"
+        />
 
-      <Button label="링크 보내기" onPress={handleReset} loading={loading} fullWidth />
-    </View>
+        <Button label="링크 보내기" onPress={handleReset} loading={loading} fullWidth />
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 

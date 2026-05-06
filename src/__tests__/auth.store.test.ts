@@ -36,4 +36,12 @@ describe("useAuthStore", () => {
     });
     expect(result.current.session).toBeNull();
   });
+
+  it("initialize sets loading to false", async () => {
+    const { result } = renderHook(() => useAuthStore());
+    await act(async () => {
+      await result.current.initialize();
+    });
+    expect(result.current.loading).toBe(false);
+  });
 });
