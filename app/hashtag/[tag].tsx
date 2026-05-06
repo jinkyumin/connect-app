@@ -1,5 +1,6 @@
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
+import type { Post } from "@/types";
 import { useHashtagFeed } from "@/hooks/useSearch";
 import { PostCard } from "@/components/post/PostCard";
 
@@ -20,7 +21,7 @@ export default function HashtagFeedScreen() {
         <View style={styles.center}><ActivityIndicator size="large" color="#171D1B" /></View>
       ) : (
         <FlatList
-          data={(posts ?? []) as any[]}
+          data={(posts ?? []).filter(Boolean) as Post[]}
           keyExtractor={(item) => item?.id ?? ""}
           renderItem={({ item }) => item ? <PostCard post={item} /> : null}
           ListEmptyComponent={
