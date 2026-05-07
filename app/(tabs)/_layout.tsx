@@ -1,24 +1,40 @@
 import { Tabs } from "expo-router";
-import { Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Ionicons, Feather } from "@expo/vector-icons";
 
-const TAB_ICONS: Record<string, { active: string; inactive: string }> = {
-  home:    { active: "⌂",  inactive: "⌂"  },
-  search:  { active: "⌕",  inactive: "⌕"  },
-  newpost: { active: "✎",  inactive: "✎"  },
-  activity:{ active: "🔔", inactive: "🔔" },
-  profile: { active: "◉",  inactive: "◯"  },
-};
+function HomeIcon({ focused }: { focused: boolean }) {
+  return focused
+    ? <Ionicons name="home" size={24} color="#171D1B" />
+    : <Ionicons name="home-outline" size={24} color="#999999" />;
+}
 
-function TabIcon({ focused, name }: { focused: boolean; name: keyof typeof TAB_ICONS }) {
-  const icon = TAB_ICONS[name];
+function SearchIcon({ focused }: { focused: boolean }) {
+  return <Feather name="search" size={22} color={focused ? "#171D1B" : "#999999"} />;
+}
+
+function NewPostIcon({ focused }: { focused: boolean }) {
   return (
-    <Text style={[styles.icon, focused ? styles.iconActive : styles.iconInactive]}>
-      {focused ? icon.active : icon.inactive}
-    </Text>
+    <View style={[styles.newPostBtn, focused && styles.newPostBtnActive]}>
+      <Feather name="plus" size={22} color={focused ? "#171D1B" : "#555555"} />
+    </View>
   );
 }
 
+function ActivityIcon({ focused }: { focused: boolean }) {
+  return focused
+    ? <Ionicons name="heart" size={24} color="#171D1B" />
+    : <Ionicons name="heart-outline" size={24} color="#999999" />;
+}
+
+function ProfileIcon({ focused }: { focused: boolean }) {
+  return focused
+    ? <Ionicons name="person" size={24} color="#171D1B" />
+    : <Ionicons name="person-outline" size={24} color="#999999" />;
+}
+
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
   return (
     <Tabs
       screenOptions={{
@@ -27,8 +43,8 @@ export default function TabsLayout() {
           backgroundColor: "#FFFFFF",
           borderTopWidth: 1,
           borderTopColor: "#F5F5F5",
-          height: 60,
-          paddingBottom: 8,
+          height: 52 + insets.bottom,
+          paddingBottom: insets.bottom,
           paddingTop: 8,
         },
         tabBarActiveTintColor: "#171D1B",
@@ -40,35 +56,35 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: "홈",
-          tabBarIcon: ({ focused }) => <TabIcon focused={focused} name="home" />,
+          tabBarIcon: ({ focused }) => <HomeIcon focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
           title: "검색",
-          tabBarIcon: ({ focused }) => <TabIcon focused={focused} name="search" />,
+          tabBarIcon: ({ focused }) => <SearchIcon focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="new-post"
         options={{
           title: "새 글",
-          tabBarIcon: ({ focused }) => <TabIcon focused={focused} name="newpost" />,
+          tabBarIcon: ({ focused }) => <NewPostIcon focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="activity"
         options={{
           title: "알림",
-          tabBarIcon: ({ focused }) => <TabIcon focused={focused} name="activity" />,
+          tabBarIcon: ({ focused }) => <ActivityIcon focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: "프로필",
-          tabBarIcon: ({ focused }) => <TabIcon focused={focused} name="profile" />,
+          tabBarIcon: ({ focused }) => <ProfileIcon focused={focused} />,
         }}
       />
     </Tabs>
@@ -76,7 +92,15 @@ export default function TabsLayout() {
 }
 
 const styles = StyleSheet.create({
-  icon: { fontSize: 22 },
-  iconActive: { color: "#171D1B" },
-  iconInactive: { color: "#999999", opacity: 0.5 },
+  newPostBtn: {
+    width: 44,
+    height: 32,
+    borderRadius: 10,
+    backgroundColor: "#F0F0F0",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  newPostBtnActive: {
+    backgroundColor: "#E8E8E8",
+  },
 });
