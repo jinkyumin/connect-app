@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSearchUsers } from "@/hooks/useSearch";
 import { Avatar } from "@/components/ui/Avatar";
 import type { Profile } from "@/types";
 
 export default function NewMessageScreen() {
+  const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
   const { data: users } = useSearchUsers(query);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>

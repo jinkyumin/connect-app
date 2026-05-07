@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { Avatar } from "@/components/ui/Avatar";
@@ -11,6 +12,7 @@ import type { Profile, Post } from "@/types";
 const TABS = ["스레드", "답글", "미디어", "리포스트"] as const;
 
 export default function UserProfileScreen() {
+  const insets = useSafeAreaInsets();
   const { username } = useLocalSearchParams<{ username: string }>();
   const { mutate: follow, isPending: following } = useFollow();
   const { mutate: unfollow, isPending: unfollowing } = useUnfollow();
@@ -59,7 +61,7 @@ export default function UserProfileScreen() {
     : profile.followers_count ?? 0;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} testID="back-button">
           <Text style={styles.back}>← 뒤로</Text>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthStore } from "@/stores/auth.store";
 import { useNotifications } from "@/hooks/useNotifications";
 import { Avatar } from "@/components/ui/Avatar";
@@ -32,6 +33,7 @@ function filterByTab(notifications: Notification[], tab: NotifTab): Notification
 }
 
 export default function ActivityScreen() {
+  const insets = useSafeAreaInsets();
   const session = useAuthStore((s) => s.session);
   const { data: notifications, isLoading } = useNotifications(session?.user.id);
   const [activeTab, setActiveTab] = useState<NotifTab>("모두");
@@ -43,7 +45,7 @@ export default function ActivityScreen() {
   const filtered = filterByTab(notifications ?? [], activeTab);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>활동</Text>
       </View>

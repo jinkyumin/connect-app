@@ -4,12 +4,14 @@ import {
   Alert, Image, ScrollView, KeyboardAvoidingView, Platform,
 } from "react-native";
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import { useAuthStore } from "@/stores/auth.store";
 import { useCreatePost } from "@/hooks/useCreatePost";
 import { Avatar } from "@/components/ui/Avatar";
 
 export default function NewPostScreen() {
+  const insets = useSafeAreaInsets();
   const [content, setContent] = useState("");
   const [mediaUris, setMediaUris] = useState<string[]>([]);
   const session = useAuthStore((s) => s.session);
@@ -42,7 +44,7 @@ export default function NewPostScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 14 }]}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.cancel}>취소</Text>
         </TouchableOpacity>

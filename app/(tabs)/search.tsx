@@ -4,11 +4,13 @@ import {
   StyleSheet, ActivityIndicator,
 } from "react-native";
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSearchUsers } from "@/hooks/useSearch";
 import { Avatar } from "@/components/ui/Avatar";
 import type { Profile } from "@/types";
 
 export default function SearchScreen() {
+  const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
   const { data: users, isLoading } = useSearchUsers(query);
 
@@ -32,7 +34,7 @@ export default function SearchScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.titleBar}>
         <Text style={styles.title}>검색</Text>
       </View>

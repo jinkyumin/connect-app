@@ -1,12 +1,14 @@
 import { View, Text, Switch, StyleSheet, TouchableOpacity } from "react-native";
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useUiStore } from "@/stores/ui.store";
 
 export default function AppearanceScreen() {
+  const insets = useSafeAreaInsets();
   const { isDark, toggleDark } = useUiStore();
 
   return (
-    <View style={[styles.container, isDark && styles.darkContainer]}>
+    <View style={[styles.container, isDark && styles.darkContainer, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={[styles.back, isDark && { color: "#999" }]}>←</Text>

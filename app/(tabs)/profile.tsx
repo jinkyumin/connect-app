@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/stores/auth.store";
@@ -10,6 +11,7 @@ import type { Profile, Post } from "@/types";
 const TABS = ["스레드", "답글", "미디어", "리포스트"] as const;
 
 export default function MyProfileScreen() {
+  const insets = useSafeAreaInsets();
   const session = useAuthStore((s) => s.session);
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>("스레드");
 
@@ -57,7 +59,7 @@ export default function MyProfileScreen() {
     : profile.followers_count ?? 0;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{profile.username}</Text>
         <TouchableOpacity testID="settings-button">

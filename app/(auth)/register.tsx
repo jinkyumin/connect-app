@@ -11,9 +11,11 @@ import {
   ScrollView,
 } from "react-native";
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "@/lib/supabase";
 
 export default function RegisterScreen() {
+  const insets = useSafeAreaInsets();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -40,7 +42,7 @@ export default function RegisterScreen() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <ScrollView contentContainerStyle={styles.inner}>
+      <ScrollView contentContainerStyle={[styles.inner, { paddingTop: insets.top + 60 }]}>
         <TouchableOpacity style={styles.back} onPress={() => router.back()}>
           <Text style={styles.backText}>←</Text>
         </TouchableOpacity>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthStore } from "@/stores/auth.store";
 import { useConversations } from "@/hooks/useMessages";
 import { Avatar } from "@/components/ui/Avatar";
@@ -12,6 +13,7 @@ const TABS = ["받은 메시지함", "요청"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function MessagesScreen() {
+  const insets = useSafeAreaInsets();
   const session = useAuthStore((s) => s.session);
   const { data: conversations, isLoading } = useConversations(session?.user.id);
   const [activeTab, setActiveTab] = useState<Tab>("받은 메시지함");
@@ -25,7 +27,7 @@ export default function MessagesScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>메시지</Text>

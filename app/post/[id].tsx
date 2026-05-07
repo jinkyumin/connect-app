@@ -1,11 +1,13 @@
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { PostCard } from "@/components/post/PostCard";
 import type { Post } from "@/types";
 
 export default function PostDetailScreen() {
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const { data: post, isLoading } = useQuery<Post>({
@@ -26,7 +28,7 @@ export default function PostDetailScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.back}>← 뒤로</Text>

@@ -10,9 +10,11 @@ import {
   Platform,
 } from "react-native";
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "@/lib/supabase";
 
 export default function ForgotPasswordScreen() {
+  const insets = useSafeAreaInsets();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -31,7 +33,7 @@ export default function ForgotPasswordScreen() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <View style={styles.inner}>
+      <View style={[styles.inner, { paddingTop: insets.top + 60 }]}>
         <TouchableOpacity style={styles.back} onPress={() => router.back()}>
           <Text style={styles.backText}>←</Text>
         </TouchableOpacity>

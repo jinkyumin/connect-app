@@ -1,15 +1,17 @@
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { Post } from "@/types";
 import { useHashtagFeed } from "@/hooks/useSearch";
 import { PostCard } from "@/components/post/PostCard";
 
 export default function HashtagFeedScreen() {
+  const insets = useSafeAreaInsets();
   const { tag } = useLocalSearchParams<{ tag: string }>();
   const { data: posts, isLoading } = useHashtagFeed(tag);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.back}>← 뒤로</Text>

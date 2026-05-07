@@ -4,6 +4,7 @@ import {
   StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator,
 } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/stores/auth.store";
 import { useDirectMessages } from "@/hooks/useMessages";
@@ -45,6 +46,7 @@ function buildListItems(messages: Message[]): ListItem[] {
 }
 
 export default function DMScreen() {
+  const insets = useSafeAreaInsets();
   const { id: partnerId } = useLocalSearchParams<{ id: string }>();
   const session = useAuthStore((s) => s.session);
   const [text, setText] = useState("");
@@ -107,7 +109,7 @@ export default function DMScreen() {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
           <Text style={styles.backArrow}>←</Text>
         </TouchableOpacity>

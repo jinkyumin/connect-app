@@ -10,9 +10,11 @@ import {
   Alert,
 } from "react-native";
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "@/lib/supabase";
 
 export default function LoginScreen() {
+  const insets = useSafeAreaInsets();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,7 +32,7 @@ export default function LoginScreen() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <View style={styles.inner}>
+      <View style={[styles.inner, { paddingTop: insets.top }]}>
         <Text style={styles.logo}>사내 Connect</Text>
         <Text style={styles.subtitle}>아성다이소 IT팀 소통 플랫폼</Text>
 

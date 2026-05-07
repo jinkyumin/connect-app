@@ -1,17 +1,19 @@
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthStore } from "@/stores/auth.store";
 import { useMuteList, useUnmuteUser } from "@/hooks/useMuteBlock";
 import { Avatar } from "@/components/ui/Avatar";
 import type { Profile } from "@/types";
 
 export default function MutesScreen() {
+  const insets = useSafeAreaInsets();
   const session = useAuthStore((s) => s.session);
   const { data: muted, isLoading } = useMuteList(session?.user.id);
   const { mutate: unmute } = useUnmuteUser();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.back}>←</Text>
