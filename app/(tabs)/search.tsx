@@ -16,21 +16,31 @@ export default function SearchScreen() {
     <TouchableOpacity
       style={styles.userRow}
       onPress={() => router.push(`/profile/${item.username}`)}
+      testID={`user-row-${item.username}`}
     >
       <Avatar uri={item.avatar_url} size={44} initials={item.username[0].toUpperCase()} />
       <View style={styles.userInfo}>
         <Text style={styles.username}>{item.username}</Text>
-        {item.display_name && <Text style={styles.displayName}>{item.display_name}</Text>}
+        {item.followers_count !== undefined && (
+          <Text style={styles.followersText}>팔로워 {item.followers_count}명</Text>
+        )}
       </View>
+      <TouchableOpacity style={styles.followBtn} testID={`follow-btn-${item.username}`}>
+        <Text style={styles.followBtnText}>팔로우</Text>
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
+      <View style={styles.titleBar}>
+        <Text style={styles.title}>검색</Text>
+      </View>
       <View style={styles.searchBar}>
+        <Text style={styles.searchIcon}>🔍</Text>
         <TextInput
           style={styles.input}
-          placeholder="사용자 검색"
+          placeholder="검색"
           placeholderTextColor="#999999"
           value={query}
           onChangeText={setQuery}
@@ -57,11 +67,20 @@ export default function SearchScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFFFFF" },
-  searchBar: { padding: 16 },
-  input: {
+  titleBar: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 },
+  title: { fontSize: 20, fontWeight: "700", color: "#171D1B" },
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 16,
+    marginBottom: 8,
     backgroundColor: "#EFEFEF",
-    borderRadius: 10,
-    paddingHorizontal: 16,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+  },
+  searchIcon: { fontSize: 16, marginRight: 8 },
+  input: {
+    flex: 1,
     paddingVertical: 12,
     fontSize: 16,
     color: "#2E2E2E",
@@ -73,11 +92,21 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#EFEFEF",
+    borderBottomColor: "#F5F5F5",
   },
   userInfo: { flex: 1 },
   username: { fontWeight: "700", fontSize: 14, color: "#2E2E2E" },
-  displayName: { fontSize: 13, color: "#999999", marginTop: 2 },
+  followersText: { fontSize: 13, color: "#999999", marginTop: 2 },
+  followBtn: {
+    height: 32,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  followBtnText: { fontSize: 13, color: "#2E2E2E" },
   empty: { paddingTop: 40, alignItems: "center" },
   emptyText: { color: "#999999", fontSize: 14 },
 });
