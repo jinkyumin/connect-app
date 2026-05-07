@@ -8,7 +8,7 @@ export default function AccountScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.back}>← 뒤로</Text>
+          <Text style={styles.back}>←</Text>
         </TouchableOpacity>
         <Text style={styles.title}>계정</Text>
         <View style={{ width: 40 }} />
@@ -27,11 +27,26 @@ export default function AccountScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFFFFF" },
-  header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: "#EFEFEF" },
-  back: { color: "#999999", fontSize: 14 },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F5F5F5",
+  },
+  back: { color: "#2E2E2E", fontSize: 20, width: 40 },
   title: { fontSize: 16, fontWeight: "700", color: "#2E2E2E" },
-  row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: "#EFEFEF" },
-  label: { fontSize: 15, color: "#2E2E2E" },
-  value: { fontSize: 15, color: "#999999" },
-  arrow: { color: "#999999", fontSize: 18 },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 52,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F5F5F5",
+  },
+  label: { flex: 1, fontSize: 16, color: "#2E2E2E" },
+  value: { fontSize: 16, color: "#999999" },
+  arrow: { color: "#999999", fontSize: 20 },
 });

@@ -30,21 +30,18 @@ export default function PrivacyScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.back}>← 뒤로</Text>
+          <Text style={styles.back}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>개인정보 및 보안</Text>
+        <Text style={styles.title}>개인정보</Text>
         <View style={{ width: 40 }} />
       </View>
       {isLoading ? <ActivityIndicator style={{ marginTop: 20 }} /> : (
         <View style={styles.row}>
-          <View>
-            <Text style={styles.label}>비공개 계정</Text>
-            <Text style={styles.sub}>팔로우 요청을 승인한 사용자만 게시물을 볼 수 있습니다.</Text>
-          </View>
+          <Text style={styles.label}>비공개 계정</Text>
           <Switch
             value={profile?.is_private ?? false}
             onValueChange={update}
-            trackColor={{ false: "#EFEFEF", true: "#1AB64A" }}
+            trackColor={{ false: "#EFEFEF", true: "#171D1B" }}
             thumbColor="#FFF"
           />
         </View>
@@ -55,10 +52,25 @@ export default function PrivacyScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFFFFF" },
-  header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: "#EFEFEF" },
-  back: { color: "#999999", fontSize: 14 },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F5F5F5",
+  },
+  back: { color: "#2E2E2E", fontSize: 20, width: 40 },
   title: { fontSize: 16, fontWeight: "700", color: "#2E2E2E" },
-  row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: "#EFEFEF", gap: 12 },
-  label: { fontSize: 15, color: "#2E2E2E", flex: 1 },
-  sub: { fontSize: 13, color: "#999999", marginTop: 2 },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    height: 52,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F5F5F5",
+  },
+  label: { flex: 1, fontSize: 16, color: "#2E2E2E" },
 });
