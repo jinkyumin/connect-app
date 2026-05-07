@@ -1,4 +1,4 @@
-import { View, FlatList, Text, StyleSheet, RefreshControl, ActivityIndicator } from "react-native";
+import { View, FlatList, Text, StyleSheet, RefreshControl, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useFeed } from "@/hooks/useFeed";
 import { PostCard } from "@/components/post/PostCard";
 import { router } from "expo-router";
@@ -36,7 +36,11 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <View style={styles.headerSpacer} />
         <Text style={styles.headerTitle}>Connect</Text>
+        <TouchableOpacity style={styles.headerDmBtn} onPress={() => router.push("/messages")}>
+          <Text style={styles.headerDmIcon}>✉</Text>
+        </TouchableOpacity>
       </View>
       <FlatList
         data={posts}
@@ -65,12 +69,17 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFFFFF" },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   header: {
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#EFEFEF",
+    borderBottomColor: "#F5F5F5",
   },
+  headerSpacer: { flex: 1 },
   headerTitle: { fontSize: 22, fontWeight: "700", color: "#171D1B" },
+  headerDmBtn: { flex: 1, alignItems: "flex-end" },
+  headerDmIcon: { fontSize: 22, color: "#171D1B" },
   empty: { flex: 1, alignItems: "center", paddingTop: 60 },
   emptyText: { color: "#999999", fontSize: 14 },
 });
