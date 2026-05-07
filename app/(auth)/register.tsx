@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { supabase } from "@/lib/supabase";
-import { Button } from "@/components/ui/Button";
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState("");
@@ -43,57 +42,102 @@ export default function RegisterScreen() {
     >
       <ScrollView contentContainerStyle={styles.inner}>
         <TouchableOpacity style={styles.back} onPress={() => router.back()}>
-          <Text style={styles.backText}>← 뒤로</Text>
+          <Text style={styles.backText}>←</Text>
         </TouchableOpacity>
+
         <Text style={styles.title}>회원가입</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="사용자 이름 (영문, 숫자, _)"
-          placeholderTextColor="#999999"
-          value={username}
-          onChangeText={setUsername}
-          autoCapitalize="none"
-          testID="username-input"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="이메일"
-          placeholderTextColor="#999999"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          testID="email-input"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="비밀번호 (6자 이상)"
-          placeholderTextColor="#999999"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          testID="password-input"
-        />
+        <View style={styles.inputGroup}>
+          <TextInput
+            style={styles.input}
+            placeholder="사용자명"
+            placeholderTextColor="#999999"
+            value={username}
+            onChangeText={setUsername}
+            autoCapitalize="none"
+            testID="username-input"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="이메일"
+            placeholderTextColor="#999999"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            testID="email-input"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="비밀번호"
+            placeholderTextColor="#999999"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            testID="password-input"
+          />
+        </View>
 
-        <Button label="가입하기" onPress={handleRegister} loading={loading} fullWidth />
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={handleRegister}
+          disabled={loading}
+        >
+          <Text style={styles.submitButtonText}>
+            {loading ? "처리 중..." : "회원가입"}
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
-  inner: { flexGrow: 1, justifyContent: "center", paddingHorizontal: 24, paddingVertical: 40, gap: 12 },
-  back: { marginBottom: 16 },
-  backText: { color: "#999999", fontSize: 14 },
-  title: { fontSize: 28, fontWeight: "700", color: "#2E2E2E", marginBottom: 24 },
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  inner: {
+    flexGrow: 1,
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 40,
+  },
+  back: {
+    marginBottom: 24,
+  },
+  backText: {
+    fontSize: 24,
+    color: "#171D1B",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#2E2E2E",
+    marginBottom: 32,
+  },
+  inputGroup: {
+    gap: 12,
+  },
   input: {
+    height: 48,
     backgroundColor: "#EFEFEF",
-    borderRadius: 10,
+    borderRadius: 12,
     paddingHorizontal: 16,
-    paddingVertical: 14,
     fontSize: 16,
     color: "#2E2E2E",
+  },
+  submitButton: {
+    height: 48,
+    backgroundColor: "#171D1B",
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 24,
+  },
+  submitButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
   },
 });

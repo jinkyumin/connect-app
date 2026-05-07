@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { supabase } from "@/lib/supabase";
-import { Button } from "@/components/ui/Button";
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState("");
@@ -28,13 +27,16 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <View style={styles.inner}>
         <TouchableOpacity style={styles.back} onPress={() => router.back()}>
-          <Text style={styles.backText}>← 뒤로</Text>
+          <Text style={styles.backText}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>비밀번호 재설정</Text>
-        <Text style={styles.desc}>가입한 이메일 주소를 입력하시면 재설정 링크를 보내드립니다.</Text>
+
+        <Text style={styles.title}>비밀번호 설정</Text>
 
         <TextInput
           style={styles.input}
@@ -47,25 +49,62 @@ export default function ForgotPasswordScreen() {
           testID="email-input"
         />
 
-        <Button label="링크 보내기" onPress={handleReset} loading={loading} fullWidth />
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={handleReset}
+          disabled={loading}
+        >
+          <Text style={styles.submitButtonText}>
+            {loading ? "전송 중..." : "재설정 링크 보내기"}
+          </Text>
+        </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF", paddingHorizontal: 24, paddingTop: 60 },
-  back: { marginBottom: 24 },
-  backText: { color: "#999999", fontSize: 14 },
-  title: { fontSize: 28, fontWeight: "700", color: "#2E2E2E", marginBottom: 12 },
-  desc: { fontSize: 14, color: "#999999", marginBottom: 24, lineHeight: 20 },
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  inner: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 60,
+  },
+  back: {
+    marginBottom: 24,
+  },
+  backText: {
+    fontSize: 24,
+    color: "#171D1B",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#2E2E2E",
+    marginBottom: 32,
+  },
   input: {
+    height: 48,
     backgroundColor: "#EFEFEF",
-    borderRadius: 10,
+    borderRadius: 12,
     paddingHorizontal: 16,
-    paddingVertical: 14,
     fontSize: 16,
     color: "#2E2E2E",
-    marginBottom: 12,
+  },
+  submitButton: {
+    height: 48,
+    backgroundColor: "#171D1B",
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 24,
+  },
+  submitButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
   },
 });
