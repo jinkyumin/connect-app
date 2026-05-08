@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
+import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthStore } from "@/stores/auth.store";
-import { useNotifications } from "@/hooks/useNotifications";
+import { useNotifications, markNotificationRead } from "@/hooks/useNotifications";
 import { Avatar } from "@/components/ui/Avatar";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -38,6 +39,15 @@ export default function ActivityScreen() {
   const { data: notifications, isLoading } = useNotifications(session?.user.id);
   const [activeTab, setActiveTab] = useState<NotifTab>("모두");
 
+  const handleNotificationPress = (notification: Notification) => {
+    markNotificationRead(notification.id);
+    if (notification.post_id) {
+      router.push(`/post/${notification.post_id}`);
+    } else if (notification.actor?.username) {
+      router.push(`/profile/${notification.actor.username}`);
+    }
+  };
+
   if (isLoading) return (
     <View style={styles.center}><ActivityIndicator size="large" color="#171D1B" /></View>
   );
@@ -66,7 +76,11 @@ export default function ActivityScreen() {
         data={filtered}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={[styles.row, !item.read_at && styles.unread]} testID={`notification-${item.id}`}>
+          <TouchableOpacity
+            style={[styles.row, !item.read_at && styles.unread]}
+            onPress={() => handleNotificationPress(item)}
+            testID={`notification-${item.id}`}
+          >
             <Avatar
               uri={item.actor?.avatar_url}
               size={40}
@@ -81,7 +95,7 @@ export default function ActivityScreen() {
                 {formatDistanceToNow(new Date(item.created_at), { addSuffix: true, locale: ko })}
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
         ListEmptyComponent={
           <View style={styles.empty}>
