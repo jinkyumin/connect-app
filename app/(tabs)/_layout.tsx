@@ -59,7 +59,11 @@ export default function TabsLayout() {
           borderTopColor: tabBorder,
           height: 52 + insets.bottom,
           paddingBottom: insets.bottom,
-          paddingTop: 8,
+          paddingTop: 0,
+        },
+        tabBarItemStyle: {
+          justifyContent: "center",
+          alignItems: "center",
         },
         tabBarActiveTintColor: activeColor,
         tabBarInactiveTintColor: "#999999",

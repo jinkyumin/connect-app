@@ -150,6 +150,9 @@ export default function ProfileEditScreen() {
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ["myProfile"] });
       queryClient.invalidateQueries({ queryKey: ["myProfileEdit"] });
+      queryClient.invalidateQueries({ queryKey: ["feed"] });
+      queryClient.invalidateQueries({ queryKey: ["myPosts"] });
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
       router.back();
     } catch (err: unknown) {
       Alert.alert("오류", (err as Error).message ?? "저장에 실패했습니다.");
