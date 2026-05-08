@@ -2,6 +2,7 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from "rea
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "@/lib/supabase";
+import { useColors } from "@/lib/colors";
 
 const SETTINGS_ITEMS = [
   { label: "계정", route: "/settings/account" },
@@ -15,6 +16,7 @@ const SETTINGS_ITEMS = [
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
   const handleSignOut = async () => {
     Alert.alert("로그아웃", "정말 로그아웃하시겠습니까?", [
       { text: "취소", style: "cancel" },
@@ -30,41 +32,40 @@ export default function SettingsScreen() {
   };
 
   return (
-    <ScrollView style={[styles.container, { paddingTop: insets.top }]}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <Text style={styles.title}>설정</Text>
+        <Text style={[styles.title, { color: colors.text }]}>설정</Text>
       </View>
       {SETTINGS_ITEMS.map((item) => (
         <TouchableOpacity
           key={item.route}
-          style={styles.row}
+          style={[styles.row, { borderBottomColor: colors.border }]}
           onPress={() => router.push(item.route as any)}
           testID={`settings-${item.label}`}
         >
-          <Text style={styles.label}>{item.label}</Text>
-          <Text style={styles.arrow}>›</Text>
+          <Text style={[styles.label, { color: colors.text }]}>{item.label}</Text>
+          <Text style={[styles.arrow, { color: colors.muted }]}>›</Text>
         </TouchableOpacity>
       ))}
-      <TouchableOpacity style={styles.row} onPress={handleSignOut}>
-        <Text style={styles.signOutText}>로그아웃</Text>
+      <TouchableOpacity style={[styles.row, { borderBottomColor: colors.border }]} onPress={handleSignOut}>
+        <Text style={[styles.signOutText, { color: colors.danger }]}>로그아웃</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   header: { paddingHorizontal: 16, paddingTop: 20, paddingBottom: 16 },
-  title: { fontSize: 20, fontWeight: "700", color: "#2E2E2E" },
+  title: { fontSize: 20, fontWeight: "700" },
   row: {
     flexDirection: "row",
     alignItems: "center",
     height: 52,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
-  label: { flex: 1, fontSize: 16, color: "#2E2E2E" },
-  arrow: { color: "#999999", fontSize: 20 },
-  signOutText: { flex: 1, fontSize: 16, color: "#FF3B30" },
+  label: { flex: 1, fontSize: 16 },
+  arrow: { fontSize: 20 },
+  signOutText: { flex: 1, fontSize: 16 },
 });

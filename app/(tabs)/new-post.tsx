@@ -9,9 +9,11 @@ import * as ImagePicker from "expo-image-picker";
 import { useAuthStore } from "@/stores/auth.store";
 import { useCreatePost } from "@/hooks/useCreatePost";
 import { Avatar } from "@/components/ui/Avatar";
+import { useColors } from "@/lib/colors";
 
 export default function NewPostScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
   const [content, setContent] = useState("");
   const [mediaUris, setMediaUris] = useState<string[]>([]);
   const session = useAuthStore((s) => s.session);
@@ -43,14 +45,14 @@ export default function NewPostScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <View style={[styles.header, { paddingTop: insets.top + 14 }]}>
+    <KeyboardAvoidingView style={[styles.container, { backgroundColor: colors.bg }]} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <View style={[styles.header, { borderBottomColor: colors.border, paddingTop: insets.top + 14 }]}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.cancel}>취소</Text>
+          <Text style={[styles.cancel, { color: colors.muted }]}>취소</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>새로운 스레드</Text>
+        <Text style={[styles.title, { color: colors.text }]}>새로운 스레드</Text>
         <TouchableOpacity onPress={handleSubmit} disabled={isPending}>
-          <Text style={styles.postBtn}>게시</Text>
+          <Text style={[styles.postBtn, { color: colors.brand }]}>게시</Text>
         </TouchableOpacity>
       </View>
       <ScrollView style={styles.body}>
@@ -58,9 +60,9 @@ export default function NewPostScreen() {
           <Avatar size={36} initials={session?.user?.email?.[0]?.toUpperCase()} />
           <View style={styles.inputArea}>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.text }]}
               placeholder="새로운 소식이 있나요?"
-              placeholderTextColor="#999999"
+              placeholderTextColor={colors.muted}
               multiline
               value={content}
               onChangeText={setContent}
@@ -76,15 +78,15 @@ export default function NewPostScreen() {
           <ScrollView horizontal style={styles.mediaRow}>
             {mediaUris.map((uri) => (
               <TouchableOpacity key={uri} onPress={() => setMediaUris((prev) => prev.filter((u) => u !== uri))}>
-                <Image source={{ uri }} style={styles.mediaThumb} />
+                <Image source={{ uri }} style={[styles.mediaThumb, { backgroundColor: colors.input }]} />
               </TouchableOpacity>
             ))}
           </ScrollView>
         )}
-        <Text style={styles.hint}>팔로우하는 프로필이 답글을 달 수 있어요</Text>
+        <Text style={[styles.hint, { color: colors.muted }]}>팔로우하는 프로필이 답글을 달 수 있어요</Text>
       </ScrollView>
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit} disabled={isPending}>
+      <View style={[styles.footer, { borderTopColor: colors.border }]}>
+        <TouchableOpacity style={[styles.submitBtn, { backgroundColor: colors.brand }]} onPress={handleSubmit} disabled={isPending}>
           <Text style={styles.submitBtnText}>게시</Text>
         </TouchableOpacity>
       </View>
@@ -93,7 +95,7 @@ export default function NewPostScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -101,24 +103,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
-  cancel: { color: "#999999", fontSize: 16 },
-  title: { fontSize: 16, fontWeight: "700", color: "#2E2E2E" },
-  postBtn: { fontSize: 16, fontWeight: "700", color: "#171D1B" },
+  cancel: { fontSize: 16 },
+  title: { fontSize: 16, fontWeight: "700" },
+  postBtn: { fontSize: 16, fontWeight: "700" },
   body: { flex: 1 },
   compose: { flexDirection: "row", padding: 16, gap: 12 },
   inputArea: { flex: 1 },
-  input: { fontSize: 15, color: "#2E2E2E", lineHeight: 22, minHeight: 100 },
+  input: { fontSize: 15, lineHeight: 22, minHeight: 100 },
   imageIcon: { marginTop: 8 },
   imageIconText: { fontSize: 20 },
   mediaRow: { paddingHorizontal: 16, marginBottom: 12 },
-  mediaThumb: { width: 100, height: 100, borderRadius: 8, marginRight: 8, backgroundColor: "#EFEFEF" },
-  hint: { fontSize: 12, color: "#999999", paddingHorizontal: 16, paddingBottom: 16 },
-  footer: { paddingHorizontal: 16, paddingVertical: 12, borderTopWidth: 1, borderTopColor: "#F5F5F5" },
+  mediaThumb: { width: 100, height: 100, borderRadius: 8, marginRight: 8 },
+  hint: { fontSize: 12, paddingHorizontal: 16, paddingBottom: 16 },
+  footer: { paddingHorizontal: 16, paddingVertical: 12, borderTopWidth: 1 },
   submitBtn: {
     height: 48,
-    backgroundColor: "#171D1B",
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",

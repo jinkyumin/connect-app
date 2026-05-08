@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Avatar } from "@/components/ui/Avatar";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
+import { useColors } from "@/lib/colors";
 
 interface CommentCardProps {
   comment: {
@@ -13,20 +14,21 @@ interface CommentCardProps {
 }
 
 export function CommentCard({ comment }: CommentCardProps) {
+  const colors = useColors();
   const { profiles } = comment;
   const timeAgo = formatDistanceToNow(new Date(comment.created_at), { addSuffix: true, locale: ko });
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.bg, borderBottomColor: colors.border }]}>
       <Avatar uri={profiles?.avatar_url} size={32} initials={profiles?.username?.[0]?.toUpperCase()} />
       <View style={styles.body}>
         <View style={styles.header}>
-          <Text style={styles.username}>{profiles?.display_name ?? profiles?.username ?? "unknown"}</Text>
-          <Text style={styles.time}>{timeAgo}</Text>
+          <Text style={[styles.username, { color: colors.text }]}>{profiles?.display_name ?? profiles?.username ?? "unknown"}</Text>
+          <Text style={[styles.time, { color: colors.muted }]}>{timeAgo}</Text>
         </View>
-        <Text style={styles.content}>{comment.content}</Text>
+        <Text style={[styles.content, { color: colors.text }]}>{comment.content}</Text>
         <TouchableOpacity style={styles.likeBtn}>
-          <Text style={styles.likeIcon}>♡</Text>
+          <Text style={[styles.likeIcon, { color: colors.muted }]}>♡</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -40,14 +42,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     gap: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
-    backgroundColor: "#FFFFFF",
   },
   body: { flex: 1, gap: 4 },
   header: { flexDirection: "row", alignItems: "center", gap: 6 },
-  username: { fontWeight: "700", fontSize: 14, color: "#2E2E2E" },
-  time: { fontSize: 12, color: "#999999" },
-  content: { fontSize: 14, color: "#2E2E2E", lineHeight: 20 },
+  username: { fontWeight: "700", fontSize: 14 },
+  time: { fontSize: 12 },
+  content: { fontSize: 14, lineHeight: 20 },
   likeBtn: { marginTop: 4 },
-  likeIcon: { fontSize: 16, color: "#999999" },
+  likeIcon: { fontSize: 16 },
 });

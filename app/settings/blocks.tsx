@@ -5,20 +5,22 @@ import { useAuthStore } from "@/stores/auth.store";
 import { useBlockList, useUnblockUser } from "@/hooks/useMuteBlock";
 import { Avatar } from "@/components/ui/Avatar";
 import type { Profile } from "@/types";
+import { useColors } from "@/lib/colors";
 
 export default function BlocksScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
   const session = useAuthStore((s) => s.session);
   const { data: blocked, isLoading } = useBlockList(session?.user.id);
   const { mutate: unblock } = useUnblockUser();
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
+    <View style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.back}>←</Text>
+          <Text style={[styles.back, { color: colors.text }]}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>차단 목록</Text>
+        <Text style={[styles.title, { color: colors.text }]}>차단 목록</Text>
         <View style={{ width: 40 }} />
       </View>
       {isLoading ? <ActivityIndicator style={{ marginTop: 20 }} /> : (
@@ -26,15 +28,15 @@ export default function BlocksScreen() {
           data={blocked ?? []}
           keyExtractor={(item) => item.id}
           renderItem={({ item }: { item: Profile }) => (
-            <View style={styles.row}>
+            <View style={[styles.row, { borderBottomColor: colors.border }]}>
               <Avatar uri={item.avatar_url} size={40} initials={(item.username?.[0] ?? "?").toUpperCase()} />
-              <Text style={styles.username}>{item.username}</Text>
-              <TouchableOpacity onPress={() => unblock(item.id)} style={styles.actionBtn}>
-                <Text style={styles.actionText}>차단 해제</Text>
+              <Text style={[styles.username, { color: colors.text }]}>{item.username}</Text>
+              <TouchableOpacity onPress={() => unblock(item.id)} style={[styles.actionBtn, { borderColor: colors.border }]}>
+                <Text style={[styles.actionText, { color: colors.text }]}>차단 해제</Text>
               </TouchableOpacity>
             </View>
           )}
-          ListEmptyComponent={<View style={styles.empty}><Text style={styles.emptyText}>차단한 사용자가 없습니다.</Text></View>}
+          ListEmptyComponent={<View style={styles.empty}><Text style={[styles.emptyText, { color: colors.muted }]}>차단한 사용자가 없습니다.</Text></View>}
         />
       )}
     </View>
@@ -42,7 +44,7 @@ export default function BlocksScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -50,10 +52,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
-  back: { color: "#2E2E2E", fontSize: 20, width: 40 },
-  title: { fontSize: 16, fontWeight: "700", color: "#2E2E2E" },
+  back: { fontSize: 20, width: 40 },
+  title: { fontSize: 16, fontWeight: "700" },
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -61,19 +62,17 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
-  username: { flex: 1, fontWeight: "700", fontSize: 14, color: "#2E2E2E" },
+  username: { flex: 1, fontWeight: "700", fontSize: 14 },
   actionBtn: {
     height: 32,
     paddingHorizontal: 14,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#E0E0E0",
     alignItems: "center",
     justifyContent: "center",
   },
-  actionText: { fontSize: 13, color: "#2E2E2E" },
+  actionText: { fontSize: 13 },
   empty: { paddingTop: 40, alignItems: "center" },
-  emptyText: { color: "#999999", fontSize: 14 },
+  emptyText: { fontSize: 14 },
 });

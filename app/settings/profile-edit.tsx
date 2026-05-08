@@ -17,9 +17,11 @@ import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/stores/auth.store";
 import { Avatar } from "@/components/ui/Avatar";
 import type { Profile } from "@/types";
+import { useColors } from "@/lib/colors";
 
 export default function ProfileEditScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
   const session = useAuthStore((s) => s.session);
   const queryClient = useQueryClient();
 
@@ -75,7 +77,6 @@ export default function ProfileEditScreen() {
       const userId = session!.user.id;
       const response = await fetch(asset.uri);
       const blob = await response.blob();
-      // Convert blob to ArrayBuffer for Supabase upload
       const arrayBuffer = await new Response(blob).arrayBuffer();
 
       const { data: upload, error: uploadError } = await supabase.storage
@@ -129,24 +130,24 @@ export default function ProfileEditScreen() {
 
   if (isLoading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#171D1B" />
+      <View style={[styles.center, { backgroundColor: colors.bg }]}>
+        <ActivityIndicator size="large" color={colors.brand} />
       </View>
     );
   }
 
   return (
     <ScrollView
-      style={[styles.container, { paddingTop: insets.top }]}
+      style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}
       contentContainerStyle={styles.content}
       keyboardShouldPersistTaps="handled"
     >
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} testID="back-button">
-          <Text style={styles.back}>←</Text>
+          <Text style={[styles.back, { color: colors.brand }]}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>프로필 편집</Text>
+        <Text style={[styles.title, { color: colors.brand }]}>프로필 편집</Text>
         <View style={{ width: 32 }} />
       </View>
 
@@ -168,53 +169,53 @@ export default function ProfileEditScreen() {
               initials={username[0]?.toUpperCase() ?? "?"}
             />
           )}
-          <Text style={styles.changePhotoText}>사진 변경</Text>
+          <Text style={[styles.changePhotoText, { color: colors.brand }]}>사진 변경</Text>
         </TouchableOpacity>
       </View>
 
       {/* Fields */}
       <View style={styles.fields}>
-        <Text style={styles.fieldLabel}>이름</Text>
+        <Text style={[styles.fieldLabel, { color: colors.muted }]}>이름</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: colors.input, color: colors.text }]}
           value={displayName}
           onChangeText={setDisplayName}
           placeholder="이름"
-          placeholderTextColor="#AAAAAA"
+          placeholderTextColor={colors.muted}
           testID="input-display-name"
         />
 
-        <Text style={styles.fieldLabel}>사용자명</Text>
+        <Text style={[styles.fieldLabel, { color: colors.muted }]}>사용자명</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: colors.input, color: colors.text }]}
           value={username}
           onChangeText={setUsername}
           placeholder="사용자명"
-          placeholderTextColor="#AAAAAA"
+          placeholderTextColor={colors.muted}
           autoCapitalize="none"
           testID="input-username"
         />
 
-        <Text style={styles.fieldLabel}>소개</Text>
+        <Text style={[styles.fieldLabel, { color: colors.muted }]}>소개</Text>
         <TextInput
-          style={[styles.input, styles.multiline]}
+          style={[styles.input, styles.multiline, { backgroundColor: colors.input, color: colors.text }]}
           value={bio}
           onChangeText={setBio}
           placeholder="소개를 입력하세요"
-          placeholderTextColor="#AAAAAA"
+          placeholderTextColor={colors.muted}
           multiline
           numberOfLines={4}
           textAlignVertical="top"
           testID="input-bio"
         />
 
-        <Text style={styles.fieldLabel}>웹사이트</Text>
+        <Text style={[styles.fieldLabel, { color: colors.muted }]}>웹사이트</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: colors.input, color: colors.text }]}
           value={websiteUrl}
           onChangeText={setWebsiteUrl}
           placeholder="https://"
-          placeholderTextColor="#AAAAAA"
+          placeholderTextColor={colors.muted}
           autoCapitalize="none"
           keyboardType="url"
           testID="input-website"
@@ -223,7 +224,7 @@ export default function ProfileEditScreen() {
 
       {/* Save button */}
       <TouchableOpacity
-        style={[styles.saveBtn, saving && styles.saveBtnDisabled]}
+        style={[styles.saveBtn, { backgroundColor: colors.brand }, saving && styles.saveBtnDisabled]}
         onPress={handleSave}
         disabled={saving}
         testID="save-button"
@@ -239,7 +240,7 @@ export default function ProfileEditScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   content: { paddingBottom: 40 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   header: {
@@ -249,8 +250,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  back: { fontSize: 22, color: "#171D1B" },
-  title: { fontSize: 18, fontWeight: "700", color: "#171D1B" },
+  back: { fontSize: 22 },
+  title: { fontSize: 18, fontWeight: "700" },
   avatarSection: { alignItems: "center", paddingVertical: 24 },
   avatarLoader: {
     width: 80,
@@ -260,23 +261,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  changePhotoText: { fontSize: 14, color: "#171D1B", marginTop: 8, textAlign: "center" },
+  changePhotoText: { fontSize: 14, marginTop: 8, textAlign: "center" },
   fields: { paddingHorizontal: 16, gap: 4 },
-  fieldLabel: { fontSize: 13, color: "#888888", marginTop: 12, marginBottom: 4 },
+  fieldLabel: { fontSize: 13, marginTop: 12, marginBottom: 4 },
   input: {
-    backgroundColor: "#EFEFEF",
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 15,
-    color: "#2E2E2E",
   },
   multiline: { minHeight: 100, paddingTop: 12 },
   saveBtn: {
     marginHorizontal: 16,
     marginTop: 32,
     height: 48,
-    backgroundColor: "#171D1B",
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",

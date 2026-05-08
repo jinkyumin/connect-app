@@ -4,9 +4,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthStore } from "@/stores/auth.store";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { useColors } from "@/lib/colors";
 
 export default function PrivacyScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
   const session = useAuthStore((s) => s.session);
   const queryClient = useQueryClient();
 
@@ -29,17 +31,17 @@ export default function PrivacyScreen() {
   });
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
+    <View style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.back}>←</Text>
+          <Text style={[styles.back, { color: colors.text }]}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>개인정보</Text>
+        <Text style={[styles.title, { color: colors.text }]}>개인정보</Text>
         <View style={{ width: 40 }} />
       </View>
       {isLoading ? <ActivityIndicator style={{ marginTop: 20 }} /> : (
-        <View style={styles.row}>
-          <Text style={styles.label}>비공개 계정</Text>
+        <View style={[styles.row, { borderBottomColor: colors.border }]}>
+          <Text style={[styles.label, { color: colors.text }]}>비공개 계정</Text>
           <Switch
             value={profile?.is_private ?? false}
             onValueChange={update}
@@ -53,7 +55,7 @@ export default function PrivacyScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -61,10 +63,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
-  back: { color: "#2E2E2E", fontSize: 20, width: 40 },
-  title: { fontSize: 16, fontWeight: "700", color: "#2E2E2E" },
+  back: { fontSize: 20, width: 40 },
+  title: { fontSize: 16, fontWeight: "700" },
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -72,7 +73,6 @@ const styles = StyleSheet.create({
     height: 52,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
-  label: { flex: 1, fontSize: 16, color: "#2E2E2E" },
+  label: { flex: 1, fontSize: 16 },
 });

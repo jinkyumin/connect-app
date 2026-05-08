@@ -2,6 +2,7 @@ import { Modal, View, Text, TouchableOpacity, Alert, StyleSheet } from "react-na
 import { useDeletePost } from "@/hooks/useCreatePost";
 import { useReport } from "@/hooks/useReport";
 import { useMuteUser, useBlockUser } from "@/hooks/useMuteBlock";
+import { useColors } from "@/lib/colors";
 
 export interface PostOptionsSheetProps {
   visible: boolean;
@@ -20,6 +21,7 @@ export function PostOptionsSheet({
   currentUserId,
   onDeleted,
 }: PostOptionsSheetProps) {
+  const colors = useColors();
   const deletePost = useDeletePost();
   const report = useReport();
   const muteUser = useMuteUser();
@@ -93,35 +95,35 @@ export function PostOptionsSheet({
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={onClose} />
-      <View style={styles.sheet}>
+      <View style={[styles.sheet, { backgroundColor: colors.card }]}>
         {isOwn ? (
           <>
             <TouchableOpacity style={styles.item} onPress={handleEdit}>
-              <Text style={styles.itemText}>수정</Text>
+              <Text style={[styles.itemText, { color: colors.text }]}>수정</Text>
             </TouchableOpacity>
-            <View style={styles.divider} />
+            <View style={[styles.divider, { backgroundColor: colors.border }]} />
             <TouchableOpacity style={styles.item} onPress={handleDelete}>
-              <Text style={[styles.itemText, styles.danger]}>삭제</Text>
+              <Text style={[styles.itemText, { color: colors.danger }]}>삭제</Text>
             </TouchableOpacity>
           </>
         ) : (
           <>
             <TouchableOpacity style={styles.item} onPress={handleReport}>
-              <Text style={styles.itemText}>신고</Text>
+              <Text style={[styles.itemText, { color: colors.text }]}>신고</Text>
             </TouchableOpacity>
-            <View style={styles.divider} />
+            <View style={[styles.divider, { backgroundColor: colors.border }]} />
             <TouchableOpacity style={styles.item} onPress={handleMute}>
-              <Text style={styles.itemText}>이 계정 뮤트</Text>
+              <Text style={[styles.itemText, { color: colors.text }]}>이 계정 뮤트</Text>
             </TouchableOpacity>
-            <View style={styles.divider} />
+            <View style={[styles.divider, { backgroundColor: colors.border }]} />
             <TouchableOpacity style={styles.item} onPress={handleBlock}>
-              <Text style={[styles.itemText, styles.danger]}>이 계정 차단</Text>
+              <Text style={[styles.itemText, { color: colors.danger }]}>이 계정 차단</Text>
             </TouchableOpacity>
           </>
         )}
-        <View style={styles.cancelDivider} />
+        <View style={[styles.cancelDivider, { backgroundColor: colors.border }]} />
         <TouchableOpacity style={styles.item} onPress={onClose}>
-          <Text style={[styles.itemText, styles.cancel]}>취소</Text>
+          <Text style={[styles.itemText, { color: colors.text }, styles.cancelText]}>취소</Text>
         </TouchableOpacity>
       </View>
     </Modal>
@@ -134,7 +136,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.4)",
   },
   sheet: {
-    backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     paddingBottom: 32,
@@ -146,20 +147,14 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
-    color: "#2E2E2E",
   },
-  danger: {
-    color: "#FF3B30",
-  },
-  cancel: {
+  cancelText: {
     fontWeight: "700",
   },
   divider: {
     height: 1,
-    backgroundColor: "#F5F5F5",
   },
   cancelDivider: {
     height: 8,
-    backgroundColor: "#F5F5F5",
   },
 });

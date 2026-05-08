@@ -2,15 +2,20 @@ import { Tabs } from "expo-router";
 import { View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons, Feather } from "@expo/vector-icons";
+import { useUiStore } from "@/stores/ui.store";
 
 function HomeIcon({ focused }: { focused: boolean }) {
+  const isDark = useUiStore((s) => s.isDark);
+  const activeColor = isDark ? "#FFFFFF" : "#171D1B";
   return focused
-    ? <Ionicons name="home" size={24} color="#171D1B" />
+    ? <Ionicons name="home" size={24} color={activeColor} />
     : <Ionicons name="home-outline" size={24} color="#999999" />;
 }
 
 function SearchIcon({ focused }: { focused: boolean }) {
-  return <Feather name="search" size={22} color={focused ? "#171D1B" : "#999999"} />;
+  const isDark = useUiStore((s) => s.isDark);
+  const activeColor = isDark ? "#FFFFFF" : "#171D1B";
+  return <Feather name="search" size={22} color={focused ? activeColor : "#999999"} />;
 }
 
 function NewPostIcon({ focused }: { focused: boolean }) {
@@ -22,32 +27,41 @@ function NewPostIcon({ focused }: { focused: boolean }) {
 }
 
 function ActivityIcon({ focused }: { focused: boolean }) {
+  const isDark = useUiStore((s) => s.isDark);
+  const activeColor = isDark ? "#FFFFFF" : "#171D1B";
   return focused
-    ? <Ionicons name="heart" size={24} color="#171D1B" />
+    ? <Ionicons name="heart" size={24} color={activeColor} />
     : <Ionicons name="heart-outline" size={24} color="#999999" />;
 }
 
 function ProfileIcon({ focused }: { focused: boolean }) {
+  const isDark = useUiStore((s) => s.isDark);
+  const activeColor = isDark ? "#FFFFFF" : "#171D1B";
   return focused
-    ? <Ionicons name="person" size={24} color="#171D1B" />
+    ? <Ionicons name="person" size={24} color={activeColor} />
     : <Ionicons name="person-outline" size={24} color="#999999" />;
 }
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
+  const isDark = useUiStore((s) => s.isDark);
+  const tabBg = isDark ? "#0E0E0E" : "#FFFFFF";
+  const tabBorder = isDark ? "#2A2A2A" : "#F5F5F5";
+  const activeColor = isDark ? "#FFFFFF" : "#171D1B";
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#FFFFFF",
+          backgroundColor: tabBg,
           borderTopWidth: 1,
-          borderTopColor: "#F5F5F5",
+          borderTopColor: tabBorder,
           height: 52 + insets.bottom,
           paddingBottom: insets.bottom,
           paddingTop: 8,
         },
-        tabBarActiveTintColor: "#171D1B",
+        tabBarActiveTintColor: activeColor,
         tabBarInactiveTintColor: "#999999",
         tabBarShowLabel: false,
       }}

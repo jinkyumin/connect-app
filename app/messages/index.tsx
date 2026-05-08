@@ -8,46 +8,48 @@ import { Avatar } from "@/components/ui/Avatar";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
 import type { Conversation } from "@/types";
+import { useColors } from "@/lib/colors";
 
 const TABS = ["받은 메시지함", "요청"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function MessagesScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
   const session = useAuthStore((s) => s.session);
   const { data: conversations, isLoading } = useConversations(session?.user.id);
   const [activeTab, setActiveTab] = useState<Tab>("받은 메시지함");
 
   if (isLoading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#171D1B" />
+      <View style={[styles.center, { backgroundColor: colors.bg }]}>
+        <ActivityIndicator size="large" color={colors.brand} />
       </View>
     );
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>메시지</Text>
+        <Text style={[styles.headerTitle, { color: colors.brand }]}>메시지</Text>
         <TouchableOpacity onPress={() => router.push("/messages/new")}>
-          <Text style={styles.editIcon}>✎</Text>
+          <Text style={[styles.editIcon, { color: colors.brand }]}>✎</Text>
         </TouchableOpacity>
       </View>
 
       {/* Tabs */}
-      <View style={styles.tabRow}>
+      <View style={[styles.tabRow, { borderBottomColor: colors.border }]}>
         {TABS.map((tab) => (
           <TouchableOpacity
             key={tab}
             style={styles.tabItem}
             onPress={() => setActiveTab(tab)}
           >
-            <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
+            <Text style={[styles.tabText, { color: colors.muted }, activeTab === tab && { color: colors.brand, fontWeight: "600" }]}>
               {tab}
             </Text>
-            {activeTab === tab && <View style={styles.tabUnderline} />}
+            {activeTab === tab && <View style={[styles.tabUnderline, { backgroundColor: colors.brand }]} />}
           </TouchableOpacity>
         ))}
       </View>
@@ -58,7 +60,7 @@ export default function MessagesScreen() {
         keyExtractor={(item) => item.partner.id}
         renderItem={({ item }: { item: Conversation }) => (
           <TouchableOpacity
-            style={styles.row}
+            style={[styles.row, { borderBottomColor: colors.border }]}
             onPress={() => router.push(`/messages/${item.partner.id}`)}
           >
             <Avatar
@@ -68,11 +70,11 @@ export default function MessagesScreen() {
             />
             <View style={styles.info}>
               <View style={styles.topRow}>
-                <Text style={[styles.username, item.unread_count > 0 && styles.usernameUnread]}>
+                <Text style={[styles.username, { color: colors.text }, item.unread_count > 0 && { fontWeight: "700" }]}>
                   {item.partner.username}
                 </Text>
                 {item.last_message && (
-                  <Text style={styles.time}>
+                  <Text style={[styles.time, { color: colors.muted }]}>
                     {formatDistanceToNow(new Date(item.last_message.created_at), {
                       addSuffix: false,
                       locale: ko,
@@ -81,17 +83,17 @@ export default function MessagesScreen() {
                 )}
               </View>
               {item.last_message && (
-                <Text style={styles.preview} numberOfLines={1}>
+                <Text style={[styles.preview, { color: colors.muted }]} numberOfLines={1}>
                   {item.last_message.content}
                 </Text>
               )}
             </View>
-            {item.unread_count > 0 && <View style={styles.unreadDot} />}
+            {item.unread_count > 0 && <View style={[styles.unreadDot, { backgroundColor: colors.accent }]} />}
           </TouchableOpacity>
         )}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Text style={styles.emptyText}>메시지가 없습니다</Text>
+            <Text style={[styles.emptyText, { color: colors.muted }]}>메시지가 없습니다</Text>
           </View>
         }
       />
@@ -100,7 +102,7 @@ export default function MessagesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
 
   // Header
@@ -112,14 +114,13 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 12,
   },
-  headerTitle: { fontSize: 20, fontWeight: "700", color: "#171D1B" },
-  editIcon: { fontSize: 20, color: "#171D1B" },
+  headerTitle: { fontSize: 20, fontWeight: "700" },
+  editIcon: { fontSize: 20 },
 
   // Tabs
   tabRow: {
     flexDirection: "row",
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
   tabItem: {
     flex: 1,
@@ -127,15 +128,13 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     position: "relative",
   },
-  tabText: { fontSize: 14, color: "#999999", fontWeight: "500" },
-  tabTextActive: { color: "#171D1B", fontWeight: "600" },
+  tabText: { fontSize: 14, fontWeight: "500" },
   tabUnderline: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     height: 2,
-    backgroundColor: "#171D1B",
   },
 
   // Conversation row
@@ -146,24 +145,21 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
   info: { flex: 1 },
   topRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  username: { fontSize: 15, fontWeight: "500", color: "#2E2E2E" },
-  usernameUnread: { fontWeight: "700" },
-  time: { fontSize: 12, color: "#999999" },
-  preview: { fontSize: 14, color: "#999999", marginTop: 2 },
+  username: { fontSize: 15, fontWeight: "500" },
+  time: { fontSize: 12 },
+  preview: { fontSize: 14, marginTop: 2 },
 
   // Unread dot
   unreadDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#1AB64A",
   },
 
   // Empty state
   empty: { flex: 1, paddingTop: 80, alignItems: "center" },
-  emptyText: { fontSize: 14, color: "#999999" },
+  emptyText: { fontSize: 14 },
 });

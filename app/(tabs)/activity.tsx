@@ -8,6 +8,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
 import type { Notification } from "@/types";
+import { useColors } from "@/lib/colors";
 
 type NotifTab = "모두" | "팔로우" | "대화" | "언급";
 const TABS: NotifTab[] = ["모두", "팔로우", "대화", "언급"];
@@ -35,6 +36,7 @@ function filterByTab(notifications: Notification[], tab: NotifTab): Notification
 
 export default function ActivityScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
   const session = useAuthStore((s) => s.session);
   const { data: notifications, isLoading } = useNotifications(session?.user.id);
   const [activeTab, setActiveTab] = useState<NotifTab>("모두");
@@ -49,17 +51,17 @@ export default function ActivityScreen() {
   };
 
   if (isLoading) return (
-    <View style={styles.center}><ActivityIndicator size="large" color="#171D1B" /></View>
+    <View style={[styles.center, { backgroundColor: colors.bg }]}><ActivityIndicator size="large" color={colors.brand} /></View>
   );
 
   const filtered = filterByTab(notifications ?? [], activeTab);
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>활동</Text>
+        <Text style={[styles.headerTitle, { color: colors.brand }]}>활동</Text>
       </View>
-      <View style={styles.tabBar}>
+      <View style={[styles.tabBar, { borderBottomColor: colors.border }]}>
         {TABS.map((tab) => (
           <TouchableOpacity
             key={tab}
@@ -67,8 +69,8 @@ export default function ActivityScreen() {
             onPress={() => setActiveTab(tab)}
             testID={`activity-tab-${tab}`}
           >
-            <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>{tab}</Text>
-            {activeTab === tab && <View style={styles.tabIndicator} />}
+            <Text style={[styles.tabText, { color: colors.muted }, activeTab === tab && { color: colors.brand, fontWeight: "600" }]}>{tab}</Text>
+            {activeTab === tab && <View style={[styles.tabIndicator, { backgroundColor: colors.brand }]} />}
           </TouchableOpacity>
         ))}
       </View>
@@ -77,7 +79,7 @@ export default function ActivityScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={[styles.row, !item.read_at && styles.unread]}
+            style={[styles.row, { borderBottomColor: colors.border }, !item.read_at && { backgroundColor: colors.card }]}
             onPress={() => handleNotificationPress(item)}
             testID={`notification-${item.id}`}
           >
@@ -87,11 +89,11 @@ export default function ActivityScreen() {
               initials={item.actor?.username?.[0]?.toUpperCase()}
             />
             <View style={styles.textArea}>
-              <Text style={styles.notifText}>
+              <Text style={[styles.notifText, { color: colors.text }]}>
                 <Text style={styles.bold}>{item.actor?.username}</Text>
                 {notificationText(item)}
               </Text>
-              <Text style={styles.time}>
+              <Text style={[styles.time, { color: colors.muted }]}>
                 {formatDistanceToNow(new Date(item.created_at), { addSuffix: true, locale: ko })}
               </Text>
             </View>
@@ -99,7 +101,7 @@ export default function ActivityScreen() {
         )}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Text style={styles.emptyText}>아직 알림이 없습니다.</Text>
+            <Text style={[styles.emptyText, { color: colors.muted }]}>아직 알림이 없습니다.</Text>
           </View>
         }
       />
@@ -108,14 +110,13 @@ export default function ActivityScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   header: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 },
-  headerTitle: { fontSize: 20, fontWeight: "700", color: "#171D1B" },
+  headerTitle: { fontSize: 20, fontWeight: "700" },
   tabBar: {
     flexDirection: "row",
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
     paddingHorizontal: 4,
   },
   tab: {
@@ -124,15 +125,13 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     position: "relative",
   },
-  tabText: { fontSize: 14, color: "#999999" },
-  tabTextActive: { color: "#171D1B", fontWeight: "600" },
+  tabText: { fontSize: 14 },
   tabIndicator: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     height: 2,
-    backgroundColor: "#171D1B",
   },
   row: {
     flexDirection: "row",
@@ -140,13 +139,11 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
-  unread: { backgroundColor: "#F4FBF8" },
   textArea: { flex: 1, gap: 4 },
-  notifText: { fontSize: 14, color: "#2E2E2E", lineHeight: 20 },
+  notifText: { fontSize: 14, lineHeight: 20 },
   bold: { fontWeight: "700" },
-  time: { fontSize: 12, color: "#999999" },
+  time: { fontSize: 12 },
   empty: { paddingTop: 60, alignItems: "center" },
-  emptyText: { color: "#999999", fontSize: 14 },
+  emptyText: { fontSize: 14 },
 });

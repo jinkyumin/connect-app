@@ -12,8 +12,10 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Profile, Message } from "@/types";
 import { format, isToday, isYesterday } from "date-fns";
 import { ko } from "date-fns/locale";
+import { useColors } from "@/lib/colors";
 
 function DateSeparator({ date }: { date: string }) {
+  const colors = useColors();
   const d = new Date(date);
   let label: string;
   if (isToday(d)) label = "오늘";
@@ -22,7 +24,7 @@ function DateSeparator({ date }: { date: string }) {
 
   return (
     <View style={styles.dateSeparator}>
-      <Text style={styles.dateSeparatorText}>{label}</Text>
+      <Text style={[styles.dateSeparatorText, { color: colors.muted }]}>{label}</Text>
     </View>
   );
 }
@@ -47,6 +49,7 @@ function buildListItems(messages: Message[]): ListItem[] {
 
 export default function DMScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
   const { id: partnerId } = useLocalSearchParams<{ id: string }>();
   const session = useAuthStore((s) => s.session);
   const [text, setText] = useState("");
@@ -105,25 +108,25 @@ export default function DMScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.bg }]}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       {/* Header */}
-      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
+      <View style={[styles.header, { borderBottomColor: colors.border, paddingTop: insets.top + 12 }]}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Text style={styles.backArrow}>←</Text>
+          <Text style={[styles.backArrow, { color: colors.brand }]}>←</Text>
         </TouchableOpacity>
         <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>{partner?.username ?? "..."}</Text>
-          <Text style={styles.headerStatus}>활성 5분 전</Text>
+          <Text style={[styles.headerTitle, { color: colors.text }]}>{partner?.username ?? "..."}</Text>
+          <Text style={[styles.headerStatus, { color: colors.muted }]}>활성 5분 전</Text>
         </View>
         <View style={{ width: 40 }} />
       </View>
 
       {/* Messages */}
       {isLoading ? (
-        <View style={styles.center}>
-          <ActivityIndicator color="#171D1B" />
+        <View style={[styles.center, { backgroundColor: colors.bg }]}>
+          <ActivityIndicator color={colors.brand} />
         </View>
       ) : (
         <FlatList
@@ -142,13 +145,13 @@ export default function DMScreen() {
 
             return (
               <View style={[styles.bubbleWrapper, isMine ? styles.bubbleWrapperMine : styles.bubbleWrapperTheirs]}>
-                <View style={[styles.bubble, isMine ? styles.bubbleMine : styles.bubbleTheirs]}>
-                  <Text style={[styles.bubbleText, isMine && styles.bubbleTextMine]}>
+                <View style={[styles.bubble, isMine ? { backgroundColor: colors.brand, borderRadius: 18, borderBottomLeftRadius: 4 } : { backgroundColor: colors.input, borderRadius: 18, borderBottomRightRadius: 4 }]}>
+                  <Text style={[styles.bubbleText, { color: colors.text }, isMine && { color: "#FFFFFF" }]}>
                     {message.content}
                   </Text>
                 </View>
                 {isMine && isLastMine && message.read_at && (
-                  <Text style={styles.readReceipt}>읽음</Text>
+                  <Text style={[styles.readReceipt, { color: colors.muted }]}>읽음</Text>
                 )}
               </View>
             );
@@ -157,18 +160,18 @@ export default function DMScreen() {
       )}
 
       {/* Input row */}
-      <View style={styles.inputRow}>
+      <View style={[styles.inputRow, { borderTopColor: colors.border }]}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: colors.input, color: colors.text }]}
           placeholder="메시지 보내기..."
-          placeholderTextColor="#999999"
+          placeholderTextColor={colors.muted}
           value={text}
           onChangeText={setText}
           onSubmitEditing={handleSend}
           testID="dm-input"
           multiline
         />
-        <TouchableOpacity style={styles.sendBtn} onPress={handleSend}>
+        <TouchableOpacity style={[styles.sendBtn, { backgroundColor: colors.brand }]} onPress={handleSend}>
           <Text style={styles.sendArrow}>→</Text>
         </TouchableOpacity>
       </View>
@@ -177,7 +180,7 @@ export default function DMScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
 
   // Header
@@ -188,22 +191,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
   backBtn: { width: 40, justifyContent: "center" },
-  backArrow: { fontSize: 20, color: "#171D1B" },
+  backArrow: { fontSize: 20 },
   headerCenter: { alignItems: "center" },
-  headerTitle: { fontSize: 16, fontWeight: "700", color: "#2E2E2E" },
-  headerStatus: { fontSize: 12, color: "#999999", marginTop: 2 },
+  headerTitle: { fontSize: 16, fontWeight: "700" },
+  headerStatus: { fontSize: 12, marginTop: 2 },
 
   // Message list
   messageList: { paddingVertical: 12, paddingHorizontal: 16 },
 
   // Date separator
   dateSeparator: { alignItems: "center", marginVertical: 12 },
-  dateSeparatorText: { fontSize: 12, color: "#999999" },
+  dateSeparatorText: { fontSize: 12 },
 
-  // Bubble wrapper (handles read receipt layout)
+  // Bubble wrapper
   bubbleWrapper: { marginVertical: 3 },
   bubbleWrapperMine: { alignItems: "flex-end" },
   bubbleWrapperTheirs: { alignItems: "flex-start" },
@@ -214,21 +216,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  bubbleMine: {
-    backgroundColor: "#171D1B",
-    borderRadius: 18,
-    borderBottomLeftRadius: 4,
-  },
-  bubbleTheirs: {
-    backgroundColor: "#EFEFEF",
-    borderRadius: 18,
-    borderBottomRightRadius: 4,
-  },
-  bubbleText: { fontSize: 15, color: "#2E2E2E", lineHeight: 20 },
-  bubbleTextMine: { color: "#FFFFFF" },
+  bubbleText: { fontSize: 15, lineHeight: 20 },
 
   // Read receipt
-  readReceipt: { fontSize: 12, color: "#999999", marginTop: 3 },
+  readReceipt: { fontSize: 12, marginTop: 3 },
 
   // Input row
   inputRow: {
@@ -238,23 +229,19 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 10,
     borderTopWidth: 1,
-    borderTopColor: "#F5F5F5",
   },
   input: {
     flex: 1,
-    backgroundColor: "#EFEFEF",
     borderRadius: 24,
     paddingHorizontal: 18,
     paddingVertical: 10,
     fontSize: 15,
-    color: "#2E2E2E",
     maxHeight: 100,
   },
   sendBtn: {
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: "#171D1B",
     justifyContent: "center",
     alignItems: "center",
   },

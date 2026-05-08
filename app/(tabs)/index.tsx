@@ -8,6 +8,7 @@ import { PostOptionsSheet } from "@/components/post/PostOptionsSheet";
 import { useAuthStore } from "@/stores/auth.store";
 import { router } from "expo-router";
 import type { Post } from "@/types";
+import { useColors } from "@/lib/colors";
 
 function PostCardWrapper({
   item,
@@ -33,6 +34,7 @@ function PostCardWrapper({
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
   const { data, fetchNextPage, hasNextPage, isLoading, isError, refetch } = useFeed();
   const posts = data?.pages.flat() ?? [];
   const session = useAuthStore((s) => s.session);
@@ -41,27 +43,27 @@ export default function HomeScreen() {
 
   if (isLoading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#171D1B" />
+      <View style={[styles.center, { backgroundColor: colors.bg }]}>
+        <ActivityIndicator size="large" color={colors.brand} />
       </View>
     );
   }
 
   if (isError) {
     return (
-      <View style={styles.center}>
-        <Text style={{ color: "#999999" }}>게시물을 불러올 수 없습니다.</Text>
+      <View style={[styles.center, { backgroundColor: colors.bg }]}>
+        <Text style={{ color: colors.muted }}>게시물을 불러올 수 없습니다.</Text>
       </View>
     );
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
+    <View style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <View style={styles.headerSpacer} />
-        <Text style={styles.headerTitle}>Connect</Text>
+        <Text style={[styles.headerTitle, { color: colors.brand }]}>Connect</Text>
         <TouchableOpacity style={styles.headerDmBtn} onPress={() => router.push("/messages")}>
-          <Text style={styles.headerDmIcon}>✉</Text>
+          <Text style={[styles.headerDmIcon, { color: colors.brand }]}>✉</Text>
         </TouchableOpacity>
       </View>
       <FlatList
@@ -79,7 +81,7 @@ export default function HomeScreen() {
         refreshControl={<RefreshControl refreshing={false} onRefresh={refetch} />}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Text style={styles.emptyText}>아직 게시물이 없습니다.</Text>
+            <Text style={[styles.emptyText, { color: colors.muted }]}>아직 게시물이 없습니다.</Text>
           </View>
         }
       />
@@ -98,7 +100,7 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   header: {
     flexDirection: "row",
@@ -106,12 +108,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
   headerSpacer: { flex: 1 },
-  headerTitle: { fontSize: 22, fontWeight: "700", color: "#171D1B" },
+  headerTitle: { fontSize: 22, fontWeight: "700" },
   headerDmBtn: { flex: 1, alignItems: "flex-end" },
-  headerDmIcon: { fontSize: 22, color: "#171D1B" },
+  headerDmIcon: { fontSize: 22 },
   empty: { flex: 1, alignItems: "center", paddingTop: 60 },
-  emptyText: { color: "#999999", fontSize: 14 },
+  emptyText: { fontSize: 14 },
 });

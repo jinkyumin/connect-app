@@ -2,33 +2,35 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthStore } from "@/stores/auth.store";
+import { useColors } from "@/lib/colors";
 
 export default function AccountScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
   const session = useAuthStore((s) => s.session);
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
+    <View style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.back}>←</Text>
+          <Text style={[styles.back, { color: colors.text }]}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>계정</Text>
+        <Text style={[styles.title, { color: colors.text }]}>계정</Text>
         <View style={{ width: 40 }} />
       </View>
-      <View style={styles.row}>
-        <Text style={styles.label}>이메일</Text>
-        <Text style={styles.value}>{session?.user.email ?? "-"}</Text>
+      <View style={[styles.row, { borderBottomColor: colors.border }]}>
+        <Text style={[styles.label, { color: colors.text }]}>이메일</Text>
+        <Text style={[styles.value, { color: colors.muted }]}>{session?.user.email ?? "-"}</Text>
       </View>
-      <TouchableOpacity style={styles.row} onPress={() => router.push("/settings/profile-edit" as any)}>
-        <Text style={styles.label}>프로필 편집</Text>
-        <Text style={styles.arrow}>›</Text>
+      <TouchableOpacity style={[styles.row, { borderBottomColor: colors.border }]} onPress={() => router.push("/settings/profile-edit" as any)}>
+        <Text style={[styles.label, { color: colors.text }]}>프로필 편집</Text>
+        <Text style={[styles.arrow, { color: colors.muted }]}>›</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -36,19 +38,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
-  back: { color: "#2E2E2E", fontSize: 20, width: 40 },
-  title: { fontSize: 16, fontWeight: "700", color: "#2E2E2E" },
+  back: { fontSize: 20, width: 40 },
+  title: { fontSize: 16, fontWeight: "700" },
   row: {
     flexDirection: "row",
     alignItems: "center",
     height: 52,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
-  label: { flex: 1, fontSize: 16, color: "#2E2E2E" },
-  value: { fontSize: 16, color: "#999999" },
-  arrow: { color: "#999999", fontSize: 20 },
+  label: { flex: 1, fontSize: 16 },
+  value: { fontSize: 16 },
+  arrow: { fontSize: 20 },
 });

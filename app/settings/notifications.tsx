@@ -4,9 +4,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthStore } from "@/stores/auth.store";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { useColors } from "@/lib/colors";
 
 export default function NotificationSettingsScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
   const session = useAuthStore((s) => s.session);
   const queryClient = useQueryClient();
 
@@ -38,18 +40,18 @@ export default function NotificationSettingsScreen() {
   ] as const;
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
+    <View style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.back}>←</Text>
+          <Text style={[styles.back, { color: colors.text }]}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>알림</Text>
+        <Text style={[styles.title, { color: colors.text }]}>알림</Text>
         <View style={{ width: 40 }} />
       </View>
       {isLoading ? <ActivityIndicator style={{ marginTop: 20 }} /> : (
         TOGGLES.map(({ key, label }) => (
-          <View key={key} style={styles.row}>
-            <Text style={styles.label}>{label}</Text>
+          <View key={key} style={[styles.row, { borderBottomColor: colors.border }]}>
+            <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
             <Switch
               value={settings?.[key] ?? true}
               onValueChange={(val) => update({ [key]: val })}
@@ -64,7 +66,7 @@ export default function NotificationSettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -72,10 +74,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
-  back: { color: "#2E2E2E", fontSize: 20, width: 40 },
-  title: { fontSize: 16, fontWeight: "700", color: "#2E2E2E" },
+  back: { fontSize: 20, width: 40 },
+  title: { fontSize: 16, fontWeight: "700" },
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -83,7 +84,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     height: 52,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
-  label: { fontSize: 16, color: "#2E2E2E" },
+  label: { fontSize: 16 },
 });

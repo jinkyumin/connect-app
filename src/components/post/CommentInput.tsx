@@ -2,6 +2,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-nativ
 import { useState } from "react";
 import { Avatar } from "@/components/ui/Avatar";
 import { useCreateComment } from "@/hooks/useComments";
+import { useColors } from "@/lib/colors";
 
 interface CommentInputProps {
   postId: string;
@@ -9,6 +10,7 @@ interface CommentInputProps {
 }
 
 export function CommentInput({ postId, avatarUrl }: CommentInputProps) {
+  const colors = useColors();
   const [text, setText] = useState("");
   const { mutate: createComment, isPending } = useCreateComment();
 
@@ -21,19 +23,19 @@ export function CommentInput({ postId, avatarUrl }: CommentInputProps) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.bg, borderTopColor: colors.border }]}>
       <Avatar uri={avatarUrl} size={32} />
       <TextInput
-        style={styles.input}
+        style={[styles.input, { backgroundColor: colors.input, color: colors.text }]}
         placeholder="댓글 달기..."
-        placeholderTextColor="#999999"
+        placeholderTextColor={colors.muted}
         value={text}
         onChangeText={setText}
         multiline
         testID="comment-input"
       />
       <TouchableOpacity onPress={handleSubmit} disabled={!text.trim() || isPending}>
-        <Text style={[styles.submitBtn, (!text.trim() || isPending) && styles.submitBtnDisabled]}>
+        <Text style={[styles.submitBtn, { color: colors.brand }, (!text.trim() || isPending) && { color: colors.muted }]}>
           게시
         </Text>
       </TouchableOpacity>
@@ -47,27 +49,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: "#FFFFFF",
     borderTopWidth: 1,
-    borderTopColor: "#F5F5F5",
     gap: 10,
   },
   input: {
     flex: 1,
-    backgroundColor: "#EFEFEF",
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 8,
     fontSize: 14,
-    color: "#2E2E2E",
     maxHeight: 100,
   },
   submitBtn: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#171D1B",
-  },
-  submitBtnDisabled: {
-    color: "#BBBBBB",
   },
 });

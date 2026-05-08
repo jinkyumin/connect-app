@@ -11,9 +11,11 @@ import { CommentInput } from "@/components/post/CommentInput";
 import { useComments } from "@/hooks/useComments";
 import { useAuthStore } from "@/stores/auth.store";
 import type { Post } from "@/types";
+import { useColors } from "@/lib/colors";
 
 export default function PostDetailScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
   const { id } = useLocalSearchParams<{ id: string }>();
   const session = useAuthStore((s) => s.session);
   const currentUserId = session?.user.id ?? "";
@@ -37,19 +39,19 @@ export default function PostDetailScreen() {
   const profile = (session?.user as any)?.user_metadata ?? null;
 
   if (isLoading) return (
-    <View style={styles.center}><ActivityIndicator size="large" color="#171D1B" /></View>
+    <View style={[styles.center, { backgroundColor: colors.bg }]}><ActivityIndicator size="large" color={colors.brand} /></View>
   );
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { paddingTop: insets.top }]}
+      style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <View style={styles.header}>
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.back}>← 뒤로</Text>
+          <Text style={[styles.back, { color: colors.muted }]}>← 뒤로</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>게시물</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>게시물</Text>
         <View style={{ width: 40 }} />
       </View>
 
@@ -66,8 +68,8 @@ export default function PostDetailScreen() {
                 onMorePress={(postId, authorId) => setSheetPost({ postId, authorId })}
               />
             )}
-            <View style={styles.commentHeader}>
-              <Text style={styles.commentHeaderText}>댓글 {comments.length}개</Text>
+            <View style={[styles.commentHeader, { borderBottomColor: colors.border }]}>
+              <Text style={[styles.commentHeaderText, { color: colors.text }]}>댓글 {comments.length}개</Text>
             </View>
           </>
         }
@@ -90,7 +92,7 @@ export default function PostDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  container: { flex: 1 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   header: {
     flexDirection: "row",
@@ -99,16 +101,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#EFEFEF",
   },
-  back: { color: "#999999", fontSize: 14 },
-  headerTitle: { fontSize: 16, fontWeight: "700", color: "#2E2E2E" },
+  back: { fontSize: 14 },
+  headerTitle: { fontSize: 16, fontWeight: "700" },
   list: { flex: 1 },
   commentHeader: {
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
   },
-  commentHeaderText: { fontSize: 14, fontWeight: "700", color: "#2E2E2E" },
+  commentHeaderText: { fontSize: 14, fontWeight: "700" },
 });
