@@ -1,21 +1,28 @@
 import { View, FlatList, Text, StyleSheet, RefreshControl, ActivityIndicator, TouchableOpacity } from "react-native";
-import { useFeed } from "@/hooks/useFeed";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useFeed, useLikeToggle } from "@/hooks/useFeed";
+import { useRepostToggle } from "@/hooks/useRepost";
 import { PostCard } from "@/components/post/PostCard";
 import { router } from "expo-router";
-import { supabase } from "@/lib/supabase";
-import { useQueryClient } from "@tanstack/react-query";
+import type { Post } from "@/types";
+
+function PostCardWrapper({ item, onPress }: { item: Post; onPress: (id: string) => void }) {
+  const likeToggle = useLikeToggle(item.id);
+  const repostToggle = useRepostToggle(item.id);
+  return (
+    <PostCard
+      post={item}
+      onLike={() => likeToggle.mutate()}
+      onRepost={() => repostToggle.mutate()}
+      onPress={onPress}
+    />
+  );
+}
 
 export default function HomeScreen() {
+  const insets = useSafeAreaInsets();
   const { data, fetchNextPage, hasNextPage, isLoading, isError, refetch } = useFeed();
-  const queryClient = useQueryClient();
   const posts = data?.pages.flat() ?? [];
-
-  const handleLike = async (postId: string) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return;
-    await supabase.from("likes").insert({ post_id: postId, user_id: session.user.id });
-    queryClient.invalidateQueries({ queryKey: ["feed"] });
-  };
 
   if (isLoading) {
     return (
@@ -34,7 +41,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <View style={styles.headerSpacer} />
         <Text style={styles.headerTitle}>Connect</Text>
@@ -46,9 +53,8 @@ export default function HomeScreen() {
         data={posts}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <PostCard
-            post={item}
-            onLike={handleLike}
+          <PostCardWrapper
+            item={item}
             onPress={(id) => router.push(`/post/${id}`)}
           />
         )}

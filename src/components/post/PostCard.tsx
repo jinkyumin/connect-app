@@ -62,7 +62,7 @@ export function PostCard({ post, onLike, onComment, onRepost, onPress }: Props) 
             style={styles.actionBtn}
             onPress={() => onLike?.(post.id)}
           >
-            <Text style={[styles.actionIcon, post.is_liked && styles.likedIcon]}>♡</Text>
+            <Text style={[styles.actionIcon, post.is_liked && styles.likedIcon]}>{post.is_liked ? "♥" : "♡"}</Text>
             {(post.likes_count ?? 0) > 0 && (
               <Text style={styles.actionCount}>{post.likes_count}</Text>
             )}
