@@ -49,7 +49,7 @@ export default function NewMessageScreen() {
             <Avatar
               uri={item.avatar_url}
               size={44}
-              initials={item.username[0].toUpperCase()}
+              initials={item.username?.[0]?.toUpperCase() ?? ""}
             />
             <View style={styles.userInfo}>
               <Text style={[styles.username, { color: colors.text }]}>{item.username}</Text>

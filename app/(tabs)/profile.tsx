@@ -145,7 +145,7 @@ export default function MyProfileScreen() {
                   <Text style={[styles.displayName, { color: colors.text }]}>{profile.display_name ?? profile.username}</Text>
                   <Text style={[styles.usernameText, { color: colors.muted }]}>@{profile.username}</Text>
                 </View>
-                <Avatar uri={profile.avatar_url} size={80} initials={profile.username[0].toUpperCase()} />
+                <Avatar uri={profile.avatar_url} size={80} initials={profile.username?.[0]?.toUpperCase() ?? ""} />
               </View>
               {profile.bio ? <Text style={[styles.bio, { color: colors.text }]}>{profile.bio}</Text> : null}
               <Text style={[styles.followersText, { color: colors.muted }]}>팔로워 {followersCount}명</Text>

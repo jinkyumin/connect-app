@@ -67,7 +67,7 @@ export default function MessagesScreen() {
             <Avatar
               uri={item.partner.avatar_url}
               size={48}
-              initials={item.partner.username[0].toUpperCase()}
+              initials={item.partner.username?.[0]?.toUpperCase() ?? ""}
             />
             <View style={styles.info}>
               <View style={styles.topRow}>

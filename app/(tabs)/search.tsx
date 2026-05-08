@@ -57,7 +57,7 @@ function SearchUserCard({ item, myId }: SearchUserCardProps) {
       onPress={() => router.push(`/profile/${item.username}`)}
       testID={`user-row-${item.username}`}
     >
-      <Avatar uri={item.avatar_url} size={44} initials={item.username[0].toUpperCase()} />
+      <Avatar uri={item.avatar_url} size={44} initials={item.username?.[0]?.toUpperCase() ?? ""} />
       <View style={styles.userInfo}>
         <Text style={[styles.username, { color: colors.text }]}>{item.username}</Text>
         {item.followers_count !== undefined && (
