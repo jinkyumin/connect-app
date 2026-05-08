@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image, Share } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Avatar } from "@/components/ui/Avatar";
 import type { Post } from "@/types";
@@ -12,13 +12,14 @@ interface Props {
   onLike?: (postId: string) => void;
   onComment?: (postId: string) => void;
   onRepost?: (postId: string) => void;
+  onShare?: (postId: string) => void;
   onPress?: (postId: string) => void;
   onMorePress?: (postId: string, authorId: string) => void;
   onBookmark?: (postId: string) => void;
   bookmarked?: boolean;
 }
 
-export function PostCard({ post, onLike, onComment, onRepost, onPress, onMorePress, onBookmark, bookmarked }: Props) {
+export function PostCard({ post, onLike, onComment, onRepost, onShare, onPress, onMorePress, onBookmark, bookmarked }: Props) {
   const colors = useColors();
   const profile = post.profile;
   const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: ko });
@@ -117,7 +118,17 @@ export function PostCard({ post, onLike, onComment, onRepost, onPress, onMorePre
             )}
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionBtn}>
+          <TouchableOpacity
+            testID="share-button"
+            style={styles.actionBtn}
+            onPress={() => {
+              if (onShare) {
+                onShare(post.id);
+              } else {
+                Share.share({ message: post.content ?? "", title: "Connect 게시물" });
+              }
+            }}
+          >
             <Ionicons name="share-outline" size={22} color={colors.muted} />
           </TouchableOpacity>
 

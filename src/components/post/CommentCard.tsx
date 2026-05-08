@@ -1,4 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { Avatar } from "@/components/ui/Avatar";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -28,7 +29,7 @@ export function CommentCard({ comment }: CommentCardProps) {
         </View>
         <Text style={[styles.content, { color: colors.text }]}>{comment.content}</Text>
         <TouchableOpacity style={styles.likeBtn}>
-          <Text style={[styles.likeIcon, { color: colors.muted }]}>♡</Text>
+          <Ionicons name="heart-outline" size={16} color={colors.muted} />
         </TouchableOpacity>
       </View>
     </View>
@@ -49,5 +50,4 @@ const styles = StyleSheet.create({
   time: { fontSize: 12 },
   content: { fontSize: 14, lineHeight: 20 },
   likeBtn: { marginTop: 4 },
-  likeIcon: { fontSize: 16 },
 });

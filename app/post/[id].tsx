@@ -93,6 +93,7 @@ export default function PostDetailScreen() {
           postId={sheetPost.postId}
           authorId={sheetPost.authorId}
           currentUserId={currentUserId}
+          initialContent={post?.content ?? ""}
           onDeleted={() => { setSheetPost(null); router.back(); }}
         />
       )}

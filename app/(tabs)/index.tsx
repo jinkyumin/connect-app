@@ -18,7 +18,7 @@ function PostCardWrapper({
 }: {
   item: Post;
   onPress: (id: string) => void;
-  onMorePress: (postId: string, authorId: string) => void;
+  onMorePress: (postId: string, authorId: string, content?: string) => void;
 }) {
   const likeToggle = useLikeToggle(item.id);
   const repostToggle = useRepostToggle(item.id);
@@ -31,7 +31,7 @@ function PostCardWrapper({
       onLike={() => likeToggle.mutate()}
       onRepost={() => repostToggle.mutate()}
       onPress={onPress}
-      onMorePress={onMorePress}
+      onMorePress={(postId, authorId) => onMorePress(postId, authorId, item.content ?? "")}
     />
   );
 }
@@ -43,7 +43,7 @@ export default function HomeScreen() {
   const posts = data?.pages.flat() ?? [];
   const session = useAuthStore((s) => s.session);
   const currentUserId = session?.user.id ?? "";
-  const [sheetPost, setSheetPost] = useState<{ postId: string; authorId: string } | null>(null);
+  const [sheetPost, setSheetPost] = useState<{ postId: string; authorId: string; content?: string } | null>(null);
 
   if (isLoading) {
     return (
@@ -77,7 +77,7 @@ export default function HomeScreen() {
           <PostCardWrapper
             item={item}
             onPress={(id) => router.push(`/post/${id}`)}
-            onMorePress={(postId, authorId) => setSheetPost({ postId, authorId })}
+            onMorePress={(postId, authorId, content) => setSheetPost({ postId, authorId, content })}
           />
         )}
         onEndReached={() => hasNextPage && fetchNextPage()}
@@ -96,6 +96,7 @@ export default function HomeScreen() {
           postId={sheetPost.postId}
           authorId={sheetPost.authorId}
           currentUserId={currentUserId}
+          initialContent={sheetPost.content}
           onDeleted={() => setSheetPost(null)}
         />
       )}

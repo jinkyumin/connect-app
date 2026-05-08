@@ -1,5 +1,6 @@
-import { Modal, View, Text, TouchableOpacity, Alert, StyleSheet } from "react-native";
-import { useDeletePost } from "@/hooks/useCreatePost";
+import { Modal, View, Text, TouchableOpacity, Alert, StyleSheet, TextInput } from "react-native";
+import { useState } from "react";
+import { useDeletePost, useEditPost } from "@/hooks/useCreatePost";
 import { useReport } from "@/hooks/useReport";
 import { useMuteUser, useBlockUser } from "@/hooks/useMuteBlock";
 import { useColors } from "@/lib/colors";
@@ -10,6 +11,7 @@ export interface PostOptionsSheetProps {
   postId: string;
   authorId: string;
   currentUserId: string;
+  initialContent?: string;
   onDeleted?: () => void;
 }
 
@@ -19,19 +21,43 @@ export function PostOptionsSheet({
   postId,
   authorId,
   currentUserId,
+  initialContent,
   onDeleted,
 }: PostOptionsSheetProps) {
   const colors = useColors();
   const deletePost = useDeletePost();
+  const editPost = useEditPost();
   const report = useReport();
   const muteUser = useMuteUser();
   const blockUser = useBlockUser();
+  const [editMode, setEditMode] = useState(false);
+  const [editText, setEditText] = useState(initialContent ?? "");
 
   const isOwn = authorId === currentUserId;
 
   function handleEdit() {
+    setEditText(initialContent ?? "");
+    setEditMode(true);
+  }
+
+  function handleEditSubmit() {
+    const trimmed = editText.trim();
+    if (!trimmed) return;
+    editPost.mutate(
+      { postId, content: trimmed },
+      {
+        onSuccess: () => {
+          setEditMode(false);
+          onClose();
+        },
+        onError: () => Alert.alert("오류", "수정에 실패했습니다."),
+      }
+    );
+  }
+
+  function handleEditCancel() {
+    setEditMode(false);
     onClose();
-    Alert.alert("준비 중", "수정 기능은 곧 제공될 예정입니다.");
   }
 
   function handleDelete() {
@@ -90,6 +116,34 @@ export function PostOptionsSheet({
         },
       },
     ]);
+  }
+
+  if (editMode) {
+    return (
+      <Modal visible={visible} transparent animationType="slide" onRequestClose={handleEditCancel}>
+        <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={handleEditCancel} />
+        <View style={[styles.sheet, { backgroundColor: colors.card }]}>
+          <View style={styles.editHeader}>
+            <TouchableOpacity onPress={handleEditCancel}>
+              <Text style={[styles.editAction, { color: colors.muted }]}>취소</Text>
+            </TouchableOpacity>
+            <Text style={[styles.editTitle, { color: colors.text }]}>게시물 수정</Text>
+            <TouchableOpacity onPress={handleEditSubmit} disabled={editPost.isPending}>
+              <Text style={[styles.editAction, { color: colors.brand, fontWeight: "700" }]}>저장</Text>
+            </TouchableOpacity>
+          </View>
+          <TextInput
+            style={[styles.editInput, { color: colors.text, backgroundColor: colors.input, borderColor: colors.border }]}
+            value={editText}
+            onChangeText={setEditText}
+            multiline
+            autoFocus
+            placeholder="내용을 입력하세요..."
+            placeholderTextColor={colors.muted}
+          />
+        </View>
+      </Modal>
+    );
   }
 
   return (
@@ -156,5 +210,29 @@ const styles = StyleSheet.create({
   },
   cancelDivider: {
     height: 8,
+  },
+  editHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  editTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  editAction: {
+    fontSize: 15,
+  },
+  editInput: {
+    marginHorizontal: 16,
+    marginBottom: 32,
+    borderRadius: 10,
+    borderWidth: 1,
+    padding: 12,
+    fontSize: 15,
+    minHeight: 100,
+    textAlignVertical: "top",
   },
 });
