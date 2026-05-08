@@ -1,12 +1,23 @@
 import { View, FlatList, Text, StyleSheet, RefreshControl, ActivityIndicator, TouchableOpacity } from "react-native";
+import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFeed, useLikeToggle } from "@/hooks/useFeed";
 import { useRepostToggle } from "@/hooks/useRepost";
 import { PostCard } from "@/components/post/PostCard";
+import { PostOptionsSheet } from "@/components/post/PostOptionsSheet";
+import { useAuthStore } from "@/stores/auth.store";
 import { router } from "expo-router";
 import type { Post } from "@/types";
 
-function PostCardWrapper({ item, onPress }: { item: Post; onPress: (id: string) => void }) {
+function PostCardWrapper({
+  item,
+  onPress,
+  onMorePress,
+}: {
+  item: Post;
+  onPress: (id: string) => void;
+  onMorePress: (postId: string, authorId: string) => void;
+}) {
   const likeToggle = useLikeToggle(item.id);
   const repostToggle = useRepostToggle(item.id);
   return (
@@ -15,6 +26,7 @@ function PostCardWrapper({ item, onPress }: { item: Post; onPress: (id: string) 
       onLike={() => likeToggle.mutate()}
       onRepost={() => repostToggle.mutate()}
       onPress={onPress}
+      onMorePress={onMorePress}
     />
   );
 }
@@ -23,6 +35,9 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { data, fetchNextPage, hasNextPage, isLoading, isError, refetch } = useFeed();
   const posts = data?.pages.flat() ?? [];
+  const session = useAuthStore((s) => s.session);
+  const currentUserId = session?.user.id ?? "";
+  const [sheetPost, setSheetPost] = useState<{ postId: string; authorId: string } | null>(null);
 
   if (isLoading) {
     return (
@@ -56,6 +71,7 @@ export default function HomeScreen() {
           <PostCardWrapper
             item={item}
             onPress={(id) => router.push(`/post/${id}`)}
+            onMorePress={(postId, authorId) => setSheetPost({ postId, authorId })}
           />
         )}
         onEndReached={() => hasNextPage && fetchNextPage()}
@@ -67,6 +83,16 @@ export default function HomeScreen() {
           </View>
         }
       />
+      {sheetPost && (
+        <PostOptionsSheet
+          visible={!!sheetPost}
+          onClose={() => setSheetPost(null)}
+          postId={sheetPost.postId}
+          authorId={sheetPost.authorId}
+          currentUserId={currentUserId}
+          onDeleted={() => setSheetPost(null)}
+        />
+      )}
     </View>
   );
 }

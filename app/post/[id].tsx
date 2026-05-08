@@ -1,14 +1,20 @@
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
+import { useState } from "react";
 import { useLocalSearchParams, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { PostCard } from "@/components/post/PostCard";
+import { PostOptionsSheet } from "@/components/post/PostOptionsSheet";
+import { useAuthStore } from "@/stores/auth.store";
 import type { Post } from "@/types";
 
 export default function PostDetailScreen() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
+  const session = useAuthStore((s) => s.session);
+  const currentUserId = session?.user.id ?? "";
+  const [sheetPost, setSheetPost] = useState<{ postId: string; authorId: string } | null>(null);
 
   const { data: post, isLoading } = useQuery<Post>({
     queryKey: ["post", id],
@@ -36,7 +42,22 @@ export default function PostDetailScreen() {
         <Text style={styles.headerTitle}>게시물</Text>
         <View style={{ width: 40 }} />
       </View>
-      {post && <PostCard post={post} />}
+      {post && (
+        <PostCard
+          post={post}
+          onMorePress={(postId, authorId) => setSheetPost({ postId, authorId })}
+        />
+      )}
+      {sheetPost && (
+        <PostOptionsSheet
+          visible={!!sheetPost}
+          onClose={() => setSheetPost(null)}
+          postId={sheetPost.postId}
+          authorId={sheetPost.authorId}
+          currentUserId={currentUserId}
+          onDeleted={() => { setSheetPost(null); router.back(); }}
+        />
+      )}
     </View>
   );
 }

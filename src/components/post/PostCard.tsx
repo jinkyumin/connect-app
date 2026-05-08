@@ -10,9 +10,10 @@ interface Props {
   onComment?: (postId: string) => void;
   onRepost?: (postId: string) => void;
   onPress?: (postId: string) => void;
+  onMorePress?: (postId: string, authorId: string) => void;
 }
 
-export function PostCard({ post, onLike, onComment, onRepost, onPress }: Props) {
+export function PostCard({ post, onLike, onComment, onRepost, onPress, onMorePress }: Props) {
   const profile = post.profile;
   const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: ko });
   const hasComments = (post.comments_count ?? 0) > 0;
@@ -36,7 +37,11 @@ export function PostCard({ post, onLike, onComment, onRepost, onPress }: Props) 
         <View style={styles.header}>
           <Text style={styles.username} numberOfLines={1}>{profile?.username ?? "unknown"}</Text>
           <Text style={styles.time}>{timeAgo}</Text>
-          <TouchableOpacity style={styles.moreBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <TouchableOpacity
+            style={styles.moreBtn}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            onPress={() => onMorePress?.(post.id, post.user_id)}
+          >
             <Text style={styles.moreIcon}>⋯</Text>
           </TouchableOpacity>
         </View>
