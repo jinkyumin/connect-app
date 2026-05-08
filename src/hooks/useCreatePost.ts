@@ -17,6 +17,9 @@ interface CreatePostInput {
   mediaTypes?: string[];
   parentId?: string;
   quotePostId?: string;
+  ogUrl?: string;
+  ogTitle?: string;
+  ogImage?: string;
 }
 
 export function useCreatePost() {
@@ -36,6 +39,9 @@ export function useCreatePost() {
           media_types: input.mediaTypes ?? [],
           parent_id: input.parentId ?? null,
           quote_post_id: input.quotePostId ?? null,
+          og_url: input.ogUrl ?? null,
+          og_title: input.ogTitle ?? null,
+          og_image: input.ogImage ?? null,
         })
         .select()
         .single();

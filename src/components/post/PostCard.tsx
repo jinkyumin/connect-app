@@ -5,6 +5,7 @@ import type { Post } from "@/types";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useColors } from "@/lib/colors";
+import { OgPreview } from "@/components/post/OgPreview";
 
 interface Props {
   post: Post;
@@ -60,6 +61,14 @@ export function PostCard({ post, onLike, onComment, onRepost, onPress, onMorePre
         {firstImage ? (
           <Image source={{ uri: firstImage }} style={styles.image} resizeMode="cover" />
         ) : null}
+
+        {post.og_url && (
+          <OgPreview
+            url={post.og_url}
+            title={post.og_title ?? ""}
+            imageUrl={post.og_image ?? ""}
+          />
+        )}
 
         {post.edited_at ? (
           <Text style={[styles.edited, { color: colors.muted }]}>수정됨</Text>
