@@ -5,17 +5,21 @@
     "scheme": "connect",
     "version": "1.0.0",
     "orientation": "portrait",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "plugins": [
       "expo-router",
       [
-      "expo-notifications",
-      {
-        "icon": "./assets/notification-icon.png",
-        "color": "#171D1B",
-        "sounds": []
-      }
-    ]
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#171D1B",
+          "sounds": []
+        }
+      ],
+      "expo-video"
     ],
     "android": {
       "package": "com.daiso.connect",
