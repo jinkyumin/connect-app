@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "@/lib/supabase";
 import { useColors } from "@/lib/colors";
 
@@ -44,7 +45,7 @@ export default function SettingsScreen() {
           testID={`settings-${item.label}`}
         >
           <Text style={[styles.label, { color: colors.text }]}>{item.label}</Text>
-          <Text style={[styles.arrow, { color: colors.muted }]}>›</Text>
+          <Ionicons name="chevron-forward" size={18} color={colors.muted} />
         </TouchableOpacity>
       ))}
       <TouchableOpacity style={[styles.row, { borderBottomColor: colors.border }]} onPress={handleSignOut}>
@@ -66,6 +67,5 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   label: { flex: 1, fontSize: 16 },
-  arrow: { fontSize: 20 },
   signOutText: { flex: 1, fontSize: 16 },
 });

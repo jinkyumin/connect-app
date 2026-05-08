@@ -3,6 +3,7 @@ import {
   View, Text, TextInput, FlatList, TouchableOpacity,
   StyleSheet, ActivityIndicator,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSearchUsers } from "@/hooks/useSearch";
@@ -93,7 +94,7 @@ export default function SearchScreen() {
         <Text style={[styles.title, { color: colors.brand }]}>검색</Text>
       </View>
       <View style={[styles.searchBar, { backgroundColor: colors.input }]}>
-        <Text style={styles.searchIcon}>🔍</Text>
+        <Ionicons name="search" size={16} color="#999999" style={{ marginRight: 8 }} />
         <TextInput
           style={[styles.input, { color: colors.text }]}
           placeholder="검색"
@@ -133,7 +134,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 12,
   },
-  searchIcon: { fontSize: 16, marginRight: 8 },
   input: {
     flex: 1,
     paddingVertical: 12,

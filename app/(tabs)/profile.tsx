@@ -3,6 +3,7 @@ import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity }
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
+import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/stores/auth.store";
 import { Avatar } from "@/components/ui/Avatar";
@@ -106,8 +107,8 @@ export default function MyProfileScreen() {
     <View style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: colors.brand }]}>{profile.username}</Text>
-        <TouchableOpacity testID="settings-button" onPress={() => router.push("/settings" as any)}>
-          <Text style={[styles.settingsIcon, { color: colors.brand }]}>⚙</Text>
+        <TouchableOpacity testID="settings-button" onPress={() => router.push("/settings" as any)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+          <Ionicons name="settings-outline" size={22} color={colors.brand} />
         </TouchableOpacity>
       </View>
       <FlatList
@@ -175,7 +176,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   headerTitle: { fontSize: 20, fontWeight: "700" },
-  settingsIcon: { fontSize: 22 },
   profileSection: { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 8 },
   profileTop: {
     flexDirection: "row",

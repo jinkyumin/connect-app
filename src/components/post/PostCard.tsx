@@ -1,4 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { Avatar } from "@/components/ui/Avatar";
 import type { Post } from "@/types";
 import { formatDistanceToNow } from "date-fns";
@@ -46,7 +47,7 @@ export function PostCard({ post, onLike, onComment, onRepost, onPress, onMorePre
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             onPress={() => onMorePress?.(post.id, post.user_id)}
           >
-            <Text style={[styles.moreIcon, { color: colors.muted }]}>⋯</Text>
+            <Ionicons name="ellipsis-horizontal" size={22} color={colors.muted} />
           </TouchableOpacity>
         </View>
 
@@ -71,7 +72,11 @@ export function PostCard({ post, onLike, onComment, onRepost, onPress, onMorePre
             style={styles.actionBtn}
             onPress={() => onLike?.(post.id)}
           >
-            <Text style={[styles.actionIcon, { color: colors.muted }, post.is_liked && styles.likedIcon]}>{post.is_liked ? "♥" : "♡"}</Text>
+            <Ionicons
+              name={post.is_liked ? "heart" : "heart-outline"}
+              size={22}
+              color={post.is_liked ? "#FF3B30" : colors.muted}
+            />
             {(post.likes_count ?? 0) > 0 && (
               <Text style={[styles.actionCount, { color: colors.muted }]}>{post.likes_count}</Text>
             )}
@@ -82,7 +87,7 @@ export function PostCard({ post, onLike, onComment, onRepost, onPress, onMorePre
             style={styles.actionBtn}
             onPress={() => onComment?.(post.id)}
           >
-            <Text style={[styles.actionIcon, { color: colors.muted }]}>💬</Text>
+            <Ionicons name="chatbubble-outline" size={22} color={colors.muted} />
             {(post.comments_count ?? 0) > 0 && (
               <Text style={[styles.actionCount, { color: colors.muted }]}>{post.comments_count}</Text>
             )}
@@ -93,14 +98,18 @@ export function PostCard({ post, onLike, onComment, onRepost, onPress, onMorePre
             style={styles.actionBtn}
             onPress={() => onRepost?.(post.id)}
           >
-            <Text style={[styles.actionIcon, { color: colors.muted }, post.is_reposted && styles.repostedIcon]}>↻</Text>
+            <Ionicons
+              name="repeat"
+              size={22}
+              color={post.is_reposted ? "#1AB64A" : colors.muted}
+            />
             {(post.reposts_count ?? 0) > 0 && (
               <Text style={[styles.actionCount, { color: colors.muted }]}>{post.reposts_count}</Text>
             )}
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.actionBtn}>
-            <Text style={[styles.actionIcon, { color: colors.muted }]}>⤴</Text>
+            <Ionicons name="share-outline" size={22} color={colors.muted} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -108,9 +117,11 @@ export function PostCard({ post, onLike, onComment, onRepost, onPress, onMorePre
             style={[styles.actionBtn, styles.bookmarkBtn]}
             onPress={() => onBookmark?.(post.id)}
           >
-            <Text style={[styles.actionIcon, { color: colors.muted }, (bookmarked ?? post.is_bookmarked) && styles.bookmarkedIcon]}>
-              {(bookmarked ?? post.is_bookmarked) ? "★" : "☆"}
-            </Text>
+            <Ionicons
+              name={(bookmarked ?? post.is_bookmarked) ? "bookmark" : "bookmark-outline"}
+              size={22}
+              color={(bookmarked ?? post.is_bookmarked) ? "#F5A623" : colors.muted}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -145,7 +156,6 @@ const styles = StyleSheet.create({
   username: { fontWeight: "700", fontSize: 15, flex: 1 },
   time: { fontSize: 13 },
   moreBtn: { paddingLeft: 4 },
-  moreIcon: { fontSize: 16 },
   content: { fontSize: 15, lineHeight: 22 },
   image: {
     width: "100%",
@@ -156,10 +166,6 @@ const styles = StyleSheet.create({
   edited: { fontSize: 12, fontStyle: "italic" },
   actions: { flexDirection: "row", gap: 16, marginTop: 8 },
   actionBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
-  actionIcon: { fontSize: 20 },
   actionCount: { fontSize: 13 },
-  likedIcon: { color: "#FF3B30" },
-  repostedIcon: { color: "#1AB64A" },
   bookmarkBtn: { marginLeft: "auto" as const },
-  bookmarkedIcon: { color: "#F5A623" },
 });

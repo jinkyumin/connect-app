@@ -30,6 +30,7 @@ export default function ProfileEditScreen() {
   const [bio, setBio] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [pendingAvatarUri, setPendingAvatarUri] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
 
@@ -85,20 +86,22 @@ export default function ProfileEditScreen() {
           upsert: true,
           contentType: "image/jpeg",
         });
-      if (uploadError) throw uploadError;
 
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("avatars").getPublicUrl(upload.path);
-
-      await supabase
-        .from("profiles")
-        .update({ avatar_url: publicUrl })
-        .eq("id", userId);
-
-      setAvatarUrl(publicUrl);
-    } catch (err: unknown) {
-      Alert.alert("오류", (err as Error).message ?? "아바타 업로드에 실패했습니다.");
+      if (!uploadError && upload) {
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from("avatars").getPublicUrl(upload.path);
+        setAvatarUrl(publicUrl);
+        setPendingAvatarUri(null);
+      } else {
+        // Upload failed — show locally only, will retry on save
+        setPendingAvatarUri(asset.uri);
+        setAvatarUrl(asset.uri);
+      }
+    } catch {
+      // Upload failed — show locally only
+      setPendingAvatarUri(asset.uri);
+      setAvatarUrl(asset.uri);
     } finally {
       setAvatarUploading(false);
     }
@@ -108,15 +111,41 @@ export default function ProfileEditScreen() {
     if (!session) return;
     setSaving(true);
     try {
+      const userId = session.user.id;
+      const updateData: Record<string, unknown> = {
+        display_name: displayName.trim() || null,
+        username: username.trim(),
+        bio: bio.trim() || null,
+        website_url: websiteUrl.trim() || null,
+      };
+
+      // If there's a pending local URI that wasn't uploaded yet, try upload now
+      if (pendingAvatarUri) {
+        try {
+          const response = await fetch(pendingAvatarUri);
+          const blob = await response.blob();
+          const arrayBuffer = await new Response(blob).arrayBuffer();
+          const { data: upload, error: uploadError } = await supabase.storage
+            .from("avatars")
+            .upload(`${userId}/${Date.now()}.jpg`, arrayBuffer, {
+              upsert: true,
+              contentType: "image/jpeg",
+            });
+          if (!uploadError && upload) {
+            const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(upload.path);
+            updateData.avatar_url = publicUrl;
+          }
+          // If upload still fails, skip avatar_url update — other fields still save
+        } catch {}
+      } else if (avatarUrl && !avatarUrl.startsWith("file://")) {
+        // avatarUrl is already a remote URL (set during pickAvatar)
+        updateData.avatar_url = avatarUrl;
+      }
+
       const { error } = await supabase
         .from("profiles")
-        .update({
-          display_name: displayName.trim() || null,
-          username: username.trim(),
-          bio: bio.trim() || null,
-          website_url: websiteUrl.trim() || null,
-        })
-        .eq("id", session.user.id);
+        .update(updateData)
+        .eq("id", userId);
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ["myProfile"] });
       queryClient.invalidateQueries({ queryKey: ["myProfileEdit"] });

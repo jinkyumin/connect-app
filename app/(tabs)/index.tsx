@@ -1,6 +1,7 @@
 import { View, FlatList, Text, StyleSheet, RefreshControl, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { useFeed, useLikeToggle } from "@/hooks/useFeed";
 import { useRepostToggle } from "@/hooks/useRepost";
 import { PostCard } from "@/components/post/PostCard";
@@ -63,7 +64,7 @@ export default function HomeScreen() {
         <View style={styles.headerSpacer} />
         <Text style={[styles.headerTitle, { color: colors.brand }]}>Connect</Text>
         <TouchableOpacity style={styles.headerDmBtn} onPress={() => router.push("/messages")}>
-          <Text style={[styles.headerDmIcon, { color: colors.brand }]}>✉</Text>
+          <Ionicons name="mail-outline" size={24} color={colors.brand} />
         </TouchableOpacity>
       </View>
       <FlatList
@@ -112,7 +113,6 @@ const styles = StyleSheet.create({
   headerSpacer: { flex: 1 },
   headerTitle: { fontSize: 22, fontWeight: "700" },
   headerDmBtn: { flex: 1, alignItems: "flex-end" },
-  headerDmIcon: { fontSize: 22 },
   empty: { flex: 1, alignItems: "center", paddingTop: 60 },
   emptyText: { fontSize: 14 },
 });

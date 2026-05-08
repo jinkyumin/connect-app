@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthStore } from "@/stores/auth.store";
@@ -34,7 +35,7 @@ export default function MessagesScreen() {
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: colors.brand }]}>메시지</Text>
         <TouchableOpacity onPress={() => router.push("/messages/new")}>
-          <Text style={[styles.editIcon, { color: colors.brand }]}>✎</Text>
+          <Ionicons name="create-outline" size={24} color={colors.brand} />
         </TouchableOpacity>
       </View>
 
@@ -115,7 +116,6 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   headerTitle: { fontSize: 20, fontWeight: "700" },
-  editIcon: { fontSize: 20 },
 
   // Tabs
   tabRow: {
