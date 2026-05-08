@@ -11,9 +11,11 @@ interface Props {
   onRepost?: (postId: string) => void;
   onPress?: (postId: string) => void;
   onMorePress?: (postId: string, authorId: string) => void;
+  onBookmark?: (postId: string) => void;
+  bookmarked?: boolean;
 }
 
-export function PostCard({ post, onLike, onComment, onRepost, onPress, onMorePress }: Props) {
+export function PostCard({ post, onLike, onComment, onRepost, onPress, onMorePress, onBookmark, bookmarked }: Props) {
   const profile = post.profile;
   const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: ko });
   const hasComments = (post.comments_count ?? 0) > 0;
@@ -98,6 +100,16 @@ export function PostCard({ post, onLike, onComment, onRepost, onPress, onMorePre
           <TouchableOpacity style={styles.actionBtn}>
             <Text style={styles.actionIcon}>⤴</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            testID="bookmark-button"
+            style={[styles.actionBtn, styles.bookmarkBtn]}
+            onPress={() => onBookmark?.(post.id)}
+          >
+            <Text style={[styles.actionIcon, (bookmarked ?? post.is_bookmarked) && styles.bookmarkedIcon]}>
+              {(bookmarked ?? post.is_bookmarked) ? "★" : "☆"}
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableOpacity>
@@ -149,4 +161,6 @@ const styles = StyleSheet.create({
   actionCount: { fontSize: 13, color: "#999999" },
   likedIcon: { color: "#FF3B30" },
   repostedIcon: { color: "#1AB64A" },
+  bookmarkBtn: { marginLeft: "auto" as const },
+  bookmarkedIcon: { color: "#F5A623" },
 });

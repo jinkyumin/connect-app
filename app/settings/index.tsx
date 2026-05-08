@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 
 const SETTINGS_ITEMS = [
   { label: "계정", route: "/settings/account" },
+  { label: "저장됨", route: "/bookmarks" },
   { label: "알림", route: "/settings/notifications" },
   { label: "개인정보", route: "/settings/privacy" },
   { label: "모양과 화면", route: "/settings/appearance" },

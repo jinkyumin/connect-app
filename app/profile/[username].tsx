@@ -32,18 +32,59 @@ export default function UserProfileScreen() {
   });
 
   const { data: posts } = useQuery<Post[]>({
-    queryKey: ["userPosts", username],
+    queryKey: ["userPosts", username, activeTab, profile?.id],
     queryFn: async () => {
       if (!profile) return [];
-      const { data, error } = await supabase
-        .from("posts")
-        .select("*, profile:profiles(*)")
-        .eq("user_id", profile.id)
-        .is("parent_id", null)
-        .order("created_at", { ascending: false })
-        .limit(30);
-      if (error) throw error;
-      return (data ?? []) as Post[];
+      const uid = profile.id;
+
+      if (activeTab === "스레드") {
+        const { data, error } = await supabase
+          .from("posts")
+          .select("*, profile:profiles(*)")
+          .eq("user_id", uid)
+          .is("parent_id", null)
+          .order("created_at", { ascending: false })
+          .limit(30);
+        if (error) throw error;
+        return (data ?? []) as Post[];
+      }
+
+      if (activeTab === "답글") {
+        const { data, error } = await supabase
+          .from("posts")
+          .select("*, profile:profiles(*)")
+          .eq("user_id", uid)
+          .not("parent_id", "is", null)
+          .order("created_at", { ascending: false })
+          .limit(30);
+        if (error) throw error;
+        return (data ?? []) as Post[];
+      }
+
+      if (activeTab === "미디어") {
+        const { data, error } = await supabase
+          .from("posts")
+          .select("*, profile:profiles(*)")
+          .eq("user_id", uid)
+          .not("media_urls", "eq", "{}")
+          .order("created_at", { ascending: false })
+          .limit(30);
+        if (error) throw error;
+        return (data ?? []) as Post[];
+      }
+
+      if (activeTab === "리포스트") {
+        const { data, error } = await supabase
+          .from("reposts")
+          .select("post_id, posts(*, profile:profiles(*))")
+          .eq("user_id", uid)
+          .order("created_at", { ascending: false })
+          .limit(30);
+        if (error) throw error;
+        return ((data ?? []).map((r: any) => r.posts).filter(Boolean)) as Post[];
+      }
+
+      return [];
     },
     enabled: !!profile,
   });

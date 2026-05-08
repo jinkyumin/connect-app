@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
+import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
@@ -30,18 +31,59 @@ export default function MyProfileScreen() {
   });
 
   const { data: posts } = useQuery<Post[]>({
-    queryKey: ["myPosts"],
+    queryKey: ["myPosts", activeTab, profile?.id],
     queryFn: async () => {
       if (!profile) return [];
-      const { data, error } = await supabase
-        .from("posts")
-        .select("*, profile:profiles(*)")
-        .eq("user_id", profile.id)
-        .is("parent_id", null)
-        .order("created_at", { ascending: false })
-        .limit(30);
-      if (error) throw error;
-      return (data ?? []) as Post[];
+      const uid = profile.id;
+
+      if (activeTab === "스레드") {
+        const { data, error } = await supabase
+          .from("posts")
+          .select("*, profile:profiles(*)")
+          .eq("user_id", uid)
+          .is("parent_id", null)
+          .order("created_at", { ascending: false })
+          .limit(30);
+        if (error) throw error;
+        return (data ?? []) as Post[];
+      }
+
+      if (activeTab === "답글") {
+        const { data, error } = await supabase
+          .from("posts")
+          .select("*, profile:profiles(*)")
+          .eq("user_id", uid)
+          .not("parent_id", "is", null)
+          .order("created_at", { ascending: false })
+          .limit(30);
+        if (error) throw error;
+        return (data ?? []) as Post[];
+      }
+
+      if (activeTab === "미디어") {
+        const { data, error } = await supabase
+          .from("posts")
+          .select("*, profile:profiles(*)")
+          .eq("user_id", uid)
+          .not("media_urls", "eq", "{}")
+          .order("created_at", { ascending: false })
+          .limit(30);
+        if (error) throw error;
+        return (data ?? []) as Post[];
+      }
+
+      if (activeTab === "리포스트") {
+        const { data, error } = await supabase
+          .from("reposts")
+          .select("post_id, posts(*, profile:profiles(*))")
+          .eq("user_id", uid)
+          .order("created_at", { ascending: false })
+          .limit(30);
+        if (error) throw error;
+        return ((data ?? []).map((r: any) => r.posts).filter(Boolean)) as Post[];
+      }
+
+      return [];
     },
     enabled: !!profile,
   });
@@ -83,7 +125,11 @@ export default function MyProfileScreen() {
               {profile.bio ? <Text style={styles.bio}>{profile.bio}</Text> : null}
               <Text style={styles.followersText}>팔로워 {followersCount}명</Text>
               <View style={styles.actionButtons}>
-                <TouchableOpacity style={styles.actionBtn} testID="edit-profile-button">
+                <TouchableOpacity
+                  style={styles.actionBtn}
+                  testID="edit-profile-button"
+                  onPress={() => router.push("/settings/profile-edit")}
+                >
                   <Text style={styles.actionBtnText}>프로필 편집</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.actionBtn} testID="share-profile-button">
