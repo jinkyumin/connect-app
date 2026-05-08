@@ -25,6 +25,7 @@ export function useRepostToggle(postId: string) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["feed"] });
+      queryClient.invalidateQueries({ queryKey: ["reposted", postId] });
     },
   });
 }

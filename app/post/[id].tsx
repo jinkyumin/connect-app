@@ -9,6 +9,8 @@ import { PostOptionsSheet } from "@/components/post/PostOptionsSheet";
 import { CommentCard } from "@/components/post/CommentCard";
 import { CommentInput } from "@/components/post/CommentInput";
 import { useComments } from "@/hooks/useComments";
+import { useLikeToggle, useIsLiked } from "@/hooks/useFeed";
+import { useRepostToggle, useIsReposted } from "@/hooks/useRepost";
 import { useAuthStore } from "@/stores/auth.store";
 import type { Post } from "@/types";
 import { useColors } from "@/lib/colors";
@@ -35,6 +37,11 @@ export default function PostDetailScreen() {
   });
 
   const { data: comments = [] } = useComments(id ?? "");
+  const likeToggle = useLikeToggle(id ?? "");
+  const repostToggle = useRepostToggle(id ?? "");
+  const { data: isLiked } = useIsLiked(id ?? "");
+  const { data: isReposted } = useIsReposted(id ?? "");
+  const augmentedPost = post ? { ...post, is_liked: isLiked ?? false, is_reposted: isReposted ?? false } : null;
 
   const profile = (session?.user as any)?.user_metadata ?? null;
 
@@ -62,9 +69,11 @@ export default function PostDetailScreen() {
         renderItem={({ item }) => <CommentCard comment={item} />}
         ListHeaderComponent={
           <>
-            {post && (
+            {augmentedPost && (
               <PostCard
-                post={post}
+                post={augmentedPost}
+                onLike={() => likeToggle.mutate()}
+                onRepost={() => repostToggle.mutate()}
                 onMorePress={(postId, authorId) => setSheetPost({ postId, authorId })}
               />
             )}

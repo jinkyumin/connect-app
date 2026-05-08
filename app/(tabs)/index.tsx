@@ -2,8 +2,8 @@ import { View, FlatList, Text, StyleSheet, RefreshControl, ActivityIndicator, To
 import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useFeed, useLikeToggle } from "@/hooks/useFeed";
-import { useRepostToggle } from "@/hooks/useRepost";
+import { useFeed, useLikeToggle, useIsLiked } from "@/hooks/useFeed";
+import { useRepostToggle, useIsReposted } from "@/hooks/useRepost";
 import { PostCard } from "@/components/post/PostCard";
 import { PostOptionsSheet } from "@/components/post/PostOptionsSheet";
 import { useAuthStore } from "@/stores/auth.store";
@@ -22,9 +22,12 @@ function PostCardWrapper({
 }) {
   const likeToggle = useLikeToggle(item.id);
   const repostToggle = useRepostToggle(item.id);
+  const { data: isLiked } = useIsLiked(item.id);
+  const { data: isReposted } = useIsReposted(item.id);
+  const augmented = { ...item, is_liked: isLiked ?? false, is_reposted: isReposted ?? false };
   return (
     <PostCard
-      post={item}
+      post={augmented}
       onLike={() => likeToggle.mutate()}
       onRepost={() => repostToggle.mutate()}
       onPress={onPress}

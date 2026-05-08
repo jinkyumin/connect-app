@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "@/lib/supabase";
 
 export default function LoginScreen() {
@@ -18,13 +20,26 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
+
+  useEffect(() => {
+    AsyncStorage.getItem("savedEmail").then((v) => { if (v) setEmail(v); });
+  }, []);
 
   const handleLogin = async () => {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-    if (error) Alert.alert("로그인 실패", error.message);
-    else router.replace("/(tabs)");
+    if (error) {
+      Alert.alert("로그인 실패", error.message);
+    } else {
+      if (rememberMe) {
+        await AsyncStorage.setItem("savedEmail", email);
+      } else {
+        await AsyncStorage.removeItem("savedEmail");
+      }
+      router.replace("/(tabs)");
+    }
   };
 
   return (
@@ -57,6 +72,19 @@ export default function LoginScreen() {
             testID="password-input"
           />
         </View>
+
+        <TouchableOpacity
+          style={styles.rememberRow}
+          onPress={() => setRememberMe((v) => !v)}
+          activeOpacity={0.7}
+        >
+          <Ionicons
+            name={rememberMe ? "checkbox" : "square-outline"}
+            size={20}
+            color={rememberMe ? "#171D1B" : "#999999"}
+          />
+          <Text style={styles.rememberText}>로그인 유지</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.loginButton}
@@ -148,5 +176,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#171D1B",
     fontWeight: "700",
+  },
+  rememberRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 16,
+  },
+  rememberText: {
+    fontSize: 14,
+    color: "#555555",
   },
 });
