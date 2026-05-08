@@ -31,15 +31,16 @@ export default function MessagesScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
-      {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
+        <TouchableOpacity onPress={() => router.back()} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <Ionicons name="arrow-back" size={24} color={colors.brand} />
+        </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: colors.brand }]}>메시지</Text>
         <TouchableOpacity onPress={() => router.push("/messages/new")}>
           <Ionicons name="create-outline" size={24} color={colors.brand} />
         </TouchableOpacity>
       </View>
 
-      {/* Tabs */}
       <View style={[styles.tabRow, { borderBottomColor: colors.border }]}>
         {TABS.map((tab) => (
           <TouchableOpacity
@@ -55,7 +56,6 @@ export default function MessagesScreen() {
         ))}
       </View>
 
-      {/* List */}
       <FlatList
         data={activeTab === "받은 메시지함" ? (conversations ?? []) : []}
         keyExtractor={(item) => item.partner.id}
@@ -76,10 +76,7 @@ export default function MessagesScreen() {
                 </Text>
                 {item.last_message && (
                   <Text style={[styles.time, { color: colors.muted }]}>
-                    {formatDistanceToNow(new Date(item.last_message.created_at), {
-                      addSuffix: false,
-                      locale: ko,
-                    })}
+                    {formatDistanceToNow(new Date(item.last_message.created_at), { addSuffix: false, locale: ko })}
                   </Text>
                 )}
               </View>
@@ -105,8 +102,6 @@ export default function MessagesScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
-
-  // Header
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -114,30 +109,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 12,
-  },
-  headerTitle: { fontSize: 20, fontWeight: "700" },
-
-  // Tabs
-  tabRow: {
-    flexDirection: "row",
     borderBottomWidth: 1,
   },
-  tabItem: {
-    flex: 1,
-    alignItems: "center",
-    paddingVertical: 12,
-    position: "relative",
-  },
+  headerTitle: { fontSize: 20, fontWeight: "700" },
+  tabRow: { flexDirection: "row", borderBottomWidth: 1 },
+  tabItem: { flex: 1, alignItems: "center", paddingVertical: 12, position: "relative" },
   tabText: { fontSize: 14, fontWeight: "500" },
-  tabUnderline: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 2,
-  },
-
-  // Conversation row
+  tabUnderline: { position: "absolute", bottom: 0, left: 0, right: 0, height: 2 },
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -151,15 +129,7 @@ const styles = StyleSheet.create({
   username: { fontSize: 15, fontWeight: "500" },
   time: { fontSize: 12 },
   preview: { fontSize: 14, marginTop: 2 },
-
-  // Unread dot
-  unreadDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-
-  // Empty state
+  unreadDot: { width: 8, height: 8, borderRadius: 4 },
   empty: { flex: 1, paddingTop: 80, alignItems: "center" },
   emptyText: { fontSize: 14 },
 });

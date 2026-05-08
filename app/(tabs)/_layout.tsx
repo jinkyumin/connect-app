@@ -101,6 +101,13 @@ export default function TabsLayout() {
           tabBarIcon: ({ focused }) => <ProfileIcon focused={focused} />,
         }}
       />
+      <Tabs.Screen
+        name="messages"
+        options={{
+          title: "메시지",
+          tabBarButton: () => null,
+        }}
+      />
     </Tabs>
   );
 }
