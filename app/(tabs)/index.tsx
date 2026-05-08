@@ -30,6 +30,7 @@ function PostCardWrapper({
       post={augmented}
       onLike={() => likeToggle.mutate()}
       onRepost={() => repostToggle.mutate()}
+      onComment={(id) => onPress(id)}
       onPress={onPress}
       onMorePress={(postId, authorId) => onMorePress(postId, authorId, item.content ?? "")}
     />

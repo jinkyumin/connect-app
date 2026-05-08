@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Share } from "react-native";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
@@ -8,16 +8,38 @@ import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/stores/auth.store";
 import { Avatar } from "@/components/ui/Avatar";
 import { PostCard } from "@/components/post/PostCard";
+import { PostOptionsSheet } from "@/components/post/PostOptionsSheet";
+import { useLikeToggle, useIsLiked } from "@/hooks/useFeed";
+import { useRepostToggle, useIsReposted } from "@/hooks/useRepost";
 import type { Profile, Post } from "@/types";
 import { useColors } from "@/lib/colors";
 
 const TABS = ["스레드", "답글", "미디어", "리포스트"] as const;
+
+function ProfilePostCard({ item, currentUserId, onMorePress }: { item: Post; currentUserId: string; onMorePress: (postId: string, authorId: string, content?: string) => void }) {
+  const likeToggle = useLikeToggle(item.id);
+  const repostToggle = useRepostToggle(item.id);
+  const { data: isLiked } = useIsLiked(item.id);
+  const { data: isReposted } = useIsReposted(item.id);
+  const augmented = { ...item, is_liked: isLiked ?? false, is_reposted: isReposted ?? false };
+  return (
+    <PostCard
+      post={augmented}
+      onLike={() => likeToggle.mutate()}
+      onRepost={() => repostToggle.mutate()}
+      onComment={(id) => router.push(`/post/${id}`)}
+      onPress={(id) => router.push(`/post/${id}`)}
+      onMorePress={(postId, authorId) => onMorePress(postId, authorId, item.content ?? "")}
+    />
+  );
+}
 
 export default function MyProfileScreen() {
   const insets = useSafeAreaInsets();
   const colors = useColors();
   const session = useAuthStore((s) => s.session);
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>("스레드");
+  const [sheetPost, setSheetPost] = useState<{ postId: string; authorId: string; content?: string } | null>(null);
 
   const { data: profile, isLoading } = useQuery<Profile>({
     queryKey: ["myProfile"],
@@ -135,7 +157,11 @@ export default function MyProfileScreen() {
                 >
                   <Text style={[styles.actionBtnText, { color: colors.text }]}>프로필 편집</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.actionBtn, { borderColor: colors.border }]} testID="share-profile-button">
+                <TouchableOpacity
+                  style={[styles.actionBtn, { borderColor: colors.border }]}
+                  testID="share-profile-button"
+                  onPress={() => Share.share({ message: `Connect에서 ${profile.username}님을 팔로우하세요!` })}
+                >
                   <Text style={[styles.actionBtnText, { color: colors.text }]}>프로필 공유</Text>
                 </TouchableOpacity>
               </View>
@@ -156,11 +182,28 @@ export default function MyProfileScreen() {
             </View>
           </View>
         }
-        renderItem={({ item }) => <PostCard post={item} />}
+        renderItem={({ item }) => (
+          <ProfilePostCard
+            item={item}
+            currentUserId={session?.user.id ?? ""}
+            onMorePress={(postId, authorId, content) => setSheetPost({ postId, authorId, content })}
+          />
+        )}
         ListEmptyComponent={
           <View style={styles.empty}><Text style={[styles.emptyText, { color: colors.muted }]}>게시물이 없습니다.</Text></View>
         }
       />
+      {sheetPost && (
+        <PostOptionsSheet
+          visible={!!sheetPost}
+          onClose={() => setSheetPost(null)}
+          postId={sheetPost.postId}
+          authorId={sheetPost.authorId}
+          currentUserId={session?.user.id ?? ""}
+          initialContent={sheetPost.content}
+          onDeleted={() => setSheetPost(null)}
+        />
+      )}
     </View>
   );
 }

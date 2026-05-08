@@ -6,9 +6,31 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { Avatar } from "@/components/ui/Avatar";
 import { PostCard } from "@/components/post/PostCard";
+import { PostOptionsSheet } from "@/components/post/PostOptionsSheet";
 import { useFollow, useUnfollow } from "@/hooks/useFollow";
+import { useLikeToggle, useIsLiked } from "@/hooks/useFeed";
+import { useRepostToggle, useIsReposted } from "@/hooks/useRepost";
+import { useAuthStore } from "@/stores/auth.store";
 import type { Profile, Post } from "@/types";
 import { useColors } from "@/lib/colors";
+
+function UserPostCard({ item, currentUserId, onMorePress }: { item: Post; currentUserId: string; onMorePress: (postId: string, authorId: string, content?: string) => void }) {
+  const likeToggle = useLikeToggle(item.id);
+  const repostToggle = useRepostToggle(item.id);
+  const { data: isLiked } = useIsLiked(item.id);
+  const { data: isReposted } = useIsReposted(item.id);
+  const augmented = { ...item, is_liked: isLiked ?? false, is_reposted: isReposted ?? false };
+  return (
+    <PostCard
+      post={augmented}
+      onLike={() => likeToggle.mutate()}
+      onRepost={() => repostToggle.mutate()}
+      onComment={(id) => router.push(`/post/${id}`)}
+      onPress={(id) => router.push(`/post/${id}`)}
+      onMorePress={(postId, authorId) => onMorePress(postId, authorId, item.content ?? "")}
+    />
+  );
+}
 
 const TABS = ["스레드", "답글", "미디어", "리포스트"] as const;
 
@@ -19,6 +41,8 @@ export default function UserProfileScreen() {
   const { mutate: follow, isPending: following } = useFollow();
   const { mutate: unfollow, isPending: unfollowing } = useUnfollow();
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>("스레드");
+  const [sheetPost, setSheetPost] = useState<{ postId: string; authorId: string; content?: string } | null>(null);
+  const session = useAuthStore((s) => s.session);
 
   const { data: profile, isLoading } = useQuery<Profile>({
     queryKey: ["profile", username],
@@ -165,11 +189,28 @@ export default function UserProfileScreen() {
             </View>
           </View>
         }
-        renderItem={({ item }) => <PostCard post={item} />}
+        renderItem={({ item }) => (
+          <UserPostCard
+            item={item}
+            currentUserId={session?.user.id ?? ""}
+            onMorePress={(postId, authorId, content) => setSheetPost({ postId, authorId, content })}
+          />
+        )}
         ListEmptyComponent={
           <View style={styles.empty}><Text style={[styles.emptyText, { color: colors.muted }]}>게시물이 없습니다.</Text></View>
         }
       />
+      {sheetPost && (
+        <PostOptionsSheet
+          visible={!!sheetPost}
+          onClose={() => setSheetPost(null)}
+          postId={sheetPost.postId}
+          authorId={sheetPost.authorId}
+          currentUserId={session?.user.id ?? ""}
+          initialContent={sheetPost.content}
+          onDeleted={() => setSheetPost(null)}
+        />
+      )}
     </View>
   );
 }

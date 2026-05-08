@@ -3,7 +3,27 @@ import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBookmarks } from "@/hooks/useBookmark";
 import { PostCard } from "@/components/post/PostCard";
+import { useLikeToggle, useIsLiked } from "@/hooks/useFeed";
+import { useRepostToggle, useIsReposted } from "@/hooks/useRepost";
+import type { Post } from "@/types";
 import { useColors } from "@/lib/colors";
+
+function BookmarkCard({ item }: { item: Post }) {
+  const likeToggle = useLikeToggle(item.id);
+  const repostToggle = useRepostToggle(item.id);
+  const { data: isLiked } = useIsLiked(item.id);
+  const { data: isReposted } = useIsReposted(item.id);
+  const augmented = { ...item, is_liked: isLiked ?? false, is_reposted: isReposted ?? false };
+  return (
+    <PostCard
+      post={augmented}
+      onLike={() => likeToggle.mutate()}
+      onRepost={() => repostToggle.mutate()}
+      onComment={(id) => router.push(`/post/${id}`)}
+      onPress={(id) => router.push(`/post/${id}`)}
+    />
+  );
+}
 
 export default function BookmarksScreen() {
   const insets = useSafeAreaInsets();
@@ -28,7 +48,7 @@ export default function BookmarksScreen() {
         <FlatList
           data={posts ?? []}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <PostCard post={item} />}
+          renderItem={({ item }) => <BookmarkCard item={item} />}
           ListEmptyComponent={
             <View style={styles.empty}>
               <Text style={[styles.emptyText, { color: colors.muted }]}>저장된 게시물이 없습니다.</Text>

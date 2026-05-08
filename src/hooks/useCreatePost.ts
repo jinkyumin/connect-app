@@ -80,7 +80,11 @@ export function useDeletePost() {
       const { error } = await supabase.from("posts").delete().eq("id", postId);
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["feed"] }),
+    onSuccess: (_data, postId) => {
+      queryClient.invalidateQueries({ queryKey: ["feed"] });
+      queryClient.invalidateQueries({ queryKey: ["myPosts"] });
+      queryClient.removeQueries({ queryKey: ["post", postId] });
+    },
   });
 }
 
@@ -94,6 +98,10 @@ export function useEditPost() {
         .eq("id", postId);
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["feed"] }),
+    onSuccess: (_data, { postId }) => {
+      queryClient.invalidateQueries({ queryKey: ["feed"] });
+      queryClient.invalidateQueries({ queryKey: ["myPosts"] });
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
+    },
   });
 }
