@@ -7,6 +7,7 @@ import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import { useAuthStore } from "@/stores/auth.store";
+import { Ionicons } from "@expo/vector-icons";
 import { useCreatePost } from "@/hooks/useCreatePost";
 import { Avatar } from "@/components/ui/Avatar";
 import { useColors } from "@/lib/colors";
@@ -104,7 +105,7 @@ export default function NewPostScreen() {
               testID="post-input"
             />
             <TouchableOpacity onPress={handlePickImage} style={styles.imageIcon}>
-              <Text style={styles.imageIconText}>📷</Text>
+              <Ionicons name="image-outline" size={24} color="#999999" />
             </TouchableOpacity>
           </View>
         </View>
@@ -156,7 +157,6 @@ const styles = StyleSheet.create({
   inputArea: { flex: 1 },
   input: { fontSize: 15, lineHeight: 22, minHeight: 100 },
   imageIcon: { marginTop: 8 },
-  imageIconText: { fontSize: 20 },
   mediaRow: { paddingHorizontal: 16, marginBottom: 12 },
   mediaThumb: { width: 100, height: 100, borderRadius: 8, marginRight: 8 },
   hint: { fontSize: 12, paddingHorizontal: 16, paddingBottom: 16 },

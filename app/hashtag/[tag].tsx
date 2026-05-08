@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { Post } from "@/types";
 import { useHashtagFeed } from "@/hooks/useSearch";
 import { PostCard } from "@/components/post/PostCard";
+import { Ionicons } from "@expo/vector-icons";
 import { useColors } from "@/lib/colors";
 
 export default function HashtagFeedScreen() {
@@ -16,7 +17,7 @@ export default function HashtagFeedScreen() {
     <View style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={[styles.back, { color: colors.muted }]}>← 뒤로</Text>
+          <Ionicons name="arrow-back" size={24} color={colors.muted} />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: colors.text }]}>#{tag}</Text>
         <View style={{ width: 40 }} />
@@ -41,7 +42,6 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1 },
-  back: { fontSize: 14 },
   headerTitle: { fontSize: 18, fontWeight: "700" },
   empty: { paddingTop: 40, alignItems: "center" },
   emptyText: { fontSize: 14 },

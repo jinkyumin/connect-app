@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthStore } from "@/stores/auth.store";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { Ionicons } from "@expo/vector-icons";
 import { useColors } from "@/lib/colors";
 
 export default function NotificationSettingsScreen() {
@@ -43,7 +44,7 @@ export default function NotificationSettingsScreen() {
     <View style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={[styles.back, { color: colors.text }]}>←</Text>
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.text }]}>알림</Text>
         <View style={{ width: 40 }} />
@@ -75,7 +76,6 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderBottomWidth: 1,
   },
-  back: { fontSize: 20, width: 40 },
   title: { fontSize: 16, fontWeight: "700" },
   row: {
     flexDirection: "row",

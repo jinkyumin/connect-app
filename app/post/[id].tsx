@@ -8,6 +8,7 @@ import { PostCard } from "@/components/post/PostCard";
 import { PostOptionsSheet } from "@/components/post/PostOptionsSheet";
 import { CommentCard } from "@/components/post/CommentCard";
 import { CommentInput } from "@/components/post/CommentInput";
+import { Ionicons } from "@expo/vector-icons";
 import { useComments } from "@/hooks/useComments";
 import { useLikeToggle, useIsLiked } from "@/hooks/useFeed";
 import { useRepostToggle, useIsReposted } from "@/hooks/useRepost";
@@ -55,8 +56,8 @@ export default function PostDetailScreen() {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text style={[styles.back, { color: colors.muted }]}>← 뒤로</Text>
+        <TouchableOpacity onPress={() => router.back()} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <Ionicons name="arrow-back" size={24} color={colors.muted} />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: colors.text }]}>게시물</Text>
         <View style={{ width: 40 }} />
@@ -112,7 +113,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
   },
-  back: { fontSize: 14 },
   headerTitle: { fontSize: 16, fontWeight: "700" },
   list: { flex: 1 },
   commentHeader: {

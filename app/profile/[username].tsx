@@ -10,6 +10,7 @@ import { PostOptionsSheet } from "@/components/post/PostOptionsSheet";
 import { useFollow, useUnfollow } from "@/hooks/useFollow";
 import { useLikeToggle, useIsLiked } from "@/hooks/useFeed";
 import { useRepostToggle, useIsReposted } from "@/hooks/useRepost";
+import { Ionicons } from "@expo/vector-icons";
 import { useAuthStore } from "@/stores/auth.store";
 import type { Profile, Post } from "@/types";
 import { useColors } from "@/lib/colors";
@@ -130,8 +131,8 @@ export default function UserProfileScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} testID="back-button">
-          <Text style={[styles.back, { color: colors.muted }]}>← 뒤로</Text>
+        <TouchableOpacity onPress={() => router.back()} testID="back-button" hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <Ionicons name="arrow-back" size={24} color={colors.muted} />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: colors.brand }]}>{profile.username}</Text>
         <View style={{ width: 40 }} />
@@ -225,7 +226,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  back: { fontSize: 14 },
   headerTitle: { fontSize: 20, fontWeight: "700" },
   profileSection: { paddingHorizontal: 16, paddingBottom: 16, paddingTop: 8 },
   profileTop: {

@@ -12,6 +12,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Profile, Message } from "@/types";
 import { format, isToday, isYesterday } from "date-fns";
 import { ko } from "date-fns/locale";
+import { Ionicons } from "@expo/vector-icons";
 import { useColors } from "@/lib/colors";
 
 function DateSeparator({ date }: { date: string }) {
@@ -114,7 +115,7 @@ export default function DMScreen() {
       {/* Header */}
       <View style={[styles.header, { borderBottomColor: colors.border, paddingTop: insets.top + 12 }]}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Text style={[styles.backArrow, { color: colors.brand }]}>←</Text>
+          <Ionicons name="arrow-back" size={24} color={colors.brand} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
           <Text style={[styles.headerTitle, { color: colors.text }]}>{partner?.username ?? "..."}</Text>
@@ -172,7 +173,7 @@ export default function DMScreen() {
           multiline
         />
         <TouchableOpacity style={[styles.sendBtn, { backgroundColor: colors.brand }]} onPress={handleSend}>
-          <Text style={styles.sendArrow}>→</Text>
+          <Ionicons name="send" size={18} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -193,7 +194,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   backBtn: { width: 40, justifyContent: "center" },
-  backArrow: { fontSize: 20 },
   headerCenter: { alignItems: "center" },
   headerTitle: { fontSize: 16, fontWeight: "700" },
   headerStatus: { fontSize: 12, marginTop: 2 },
@@ -245,5 +245,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  sendArrow: { fontSize: 18, color: "#FFFFFF" },
 });

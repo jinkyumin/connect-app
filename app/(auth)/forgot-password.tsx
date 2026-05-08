@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "@/lib/supabase";
@@ -35,7 +36,7 @@ export default function ForgotPasswordScreen() {
     >
       <View style={[styles.inner, { paddingTop: insets.top + 60 }]}>
         <TouchableOpacity style={styles.back} onPress={() => router.back()}>
-          <Text style={styles.backText}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#171D1B" />
         </TouchableOpacity>
 
         <Text style={styles.title}>비밀번호 설정</Text>
@@ -77,10 +78,6 @@ const styles = StyleSheet.create({
   },
   back: {
     marginBottom: 24,
-  },
-  backText: {
-    fontSize: 24,
-    color: "#171D1B",
   },
   title: {
     fontSize: 24,

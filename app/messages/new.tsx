@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { useSearchUsers } from "@/hooks/useSearch";
 import { Avatar } from "@/components/ui/Avatar";
 import type { Profile } from "@/types";
@@ -18,7 +19,7 @@ export default function NewMessageScreen() {
       {/* Header */}
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Text style={[styles.backArrow, { color: colors.brand }]}>←</Text>
+          <Ionicons name="arrow-back" size={24} color={colors.brand} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.text }]}>새 메시지</Text>
         <View style={{ width: 40 }} />
@@ -76,7 +77,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   backBtn: { width: 40 },
-  backArrow: { fontSize: 20 },
   title: { fontSize: 16, fontWeight: "700" },
 
   // Search

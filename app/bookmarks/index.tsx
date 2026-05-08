@@ -34,7 +34,7 @@ export default function BookmarksScreen() {
     <View style={[styles.container, { backgroundColor: colors.bg, paddingTop: insets.top }]}>
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <TouchableOpacity onPress={() => router.back()} testID="back-button">
-          <Text style={[styles.back, { color: colors.brand }]}>←</Text>
+          <Ionicons name="arrow-back" size={24} color={colors.brand} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.brand }]}>저장됨</Text>
         <View style={{ width: 32 }} />
@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
   },
-  back: { fontSize: 22 },
   title: { fontSize: 18, fontWeight: "700" },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   empty: { paddingTop: 60, alignItems: "center" },

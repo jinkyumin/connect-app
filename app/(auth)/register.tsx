@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "@/lib/supabase";
 
 export default function RegisterScreen() {
@@ -44,7 +45,7 @@ export default function RegisterScreen() {
     >
       <ScrollView contentContainerStyle={[styles.inner, { paddingTop: insets.top + 60 }]}>
         <TouchableOpacity style={styles.back} onPress={() => router.back()}>
-          <Text style={styles.backText}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#171D1B" />
         </TouchableOpacity>
 
         <Text style={styles.title}>회원가입</Text>
@@ -107,10 +108,6 @@ const styles = StyleSheet.create({
   },
   back: {
     marginBottom: 24,
-  },
-  backText: {
-    fontSize: 24,
-    color: "#171D1B",
   },
   title: {
     fontSize: 24,

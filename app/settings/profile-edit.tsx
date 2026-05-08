@@ -17,6 +17,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/stores/auth.store";
 import { Avatar } from "@/components/ui/Avatar";
 import type { Profile } from "@/types";
+import { Ionicons } from "@expo/vector-icons";
 import { useColors } from "@/lib/colors";
 
 export default function ProfileEditScreen() {
@@ -174,7 +175,7 @@ export default function ProfileEditScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} testID="back-button">
-          <Text style={[styles.back, { color: colors.brand }]}>←</Text>
+          <Ionicons name="arrow-back" size={24} color={colors.brand} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.brand }]}>프로필 편집</Text>
         <View style={{ width: 32 }} />
@@ -279,7 +280,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  back: { fontSize: 22 },
   title: { fontSize: 18, fontWeight: "700" },
   avatarSection: { alignItems: "center", paddingVertical: 24 },
   avatarLoader: {
